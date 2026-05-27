@@ -1,0 +1,117 @@
+@inherits LayoutComponentBase
+@inject NotiesBlazor.Controllers.UserController UserController
+@inject NavigationManager Navigation
+
+<MudThemeProvider />
+<MudPopoverProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+@{
+    var isLogin = Navigation.Uri.Contains("/login", StringComparison.OrdinalIgnoreCase);
+    var currentUser = UserController.SessionUser;
+}
+
+@if (isLogin || currentUser == null)
+{
+    <MudLayout>
+        <MudMainContent>
+            @Body
+        </MudMainContent>
+    </MudLayout>
+}
+else
+{
+    <MudLayout Style="height: 100vh; overflow: hidden; background-color: #f1f5f9; display: flex; font-family: 'Inter', sans-serif;">
+        <!-- Sidebar Navigation -->
+        <aside style="width: 256px; background-color: #1e1b4b; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); justify-content: space-between; user-select: none;">
+            <div style="display: flex; flex-direction: column; flex-grow: 1;">
+                
+                <!-- Brand Logo -->
+                <div style="padding: 2rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <div style="width: 40px; height: 40px; background-color: #6366f1; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; border: 2px solid #a5b4fc;">
+                        <span style="color: white; font-weight: bold; font-size: 1.25rem; font-family: Georgia, serif; font-style: italic;">N</span>
+                    </div>
+                    <div>
+                         <h1 style="color: white; font-size: 1.5rem; font-weight: 800; margin: 0; line-height: 1.1;">Noties</h1>
+                        <span style="font-size: 9px; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.15em; font-weight: bold;">Edu-Gestor</span>
+                    </div>
+                </div>
+
+                <nav style="margin-top: 1rem; flex-grow: 1;">
+                    <div style="padding: 0 1.5rem; margin-bottom: 0.5rem; color: #818cf8; font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em;">
+                        Menú Principal
+                    </div>
+
+                    @if (currentUser.Role == NotiesBlazor.Models.UserRole.Administrador)
+                    {
+                        <a href="/usuarios" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/usuarios") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/usuarios") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/usuarios") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                            <MudIcon Icon="@Icons.Material.Filled.Group" Size="Size.Small" Style="color: #a5b4fc;" />
+                            <span>Gestión de Usuarios</span>
+                        </a>
+                    }
+
+                    <a href="/notas" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/notas") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/notas") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/notas") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                        <MudIcon Icon="@Icons.Material.Filled.Book" Size="Size.Small" Style="opacity: 0.6; color: #c7d2fe;" />
+                        <span>Notas y Calificaciones</span>
+                    </a>
+
+                    <a href="/horarios" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/horarios") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/horarios") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/horarios") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Style="opacity: 0.6; color: #c7d2fe;" />
+                        <span>Horarios Escolares</span>
+                    </a>
+
+                    <a href="/configuracion" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/configuracion") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/configuracion") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/configuracion") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                        <MudIcon Icon="@Icons.Material.Filled.Settings" Size="Size.Small" Style="opacity: 0.6; color: #c7d2fe;" />
+                        <span>Configuración</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- User bottom slot -->
+            <div style="padding: 1.5rem; background-color: rgba(15,23,42,0.2); border-top: 1px solid rgba(129,140,248,0.15);">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; overflow: hidden;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background-color: #4f46e5; border: 1px solid #6366f1; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.875rem; flex-shrink: 0;">
+                            @currentUser.FullName[0].ToString().ToUpper()
+                        </div>
+                        <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                            <p style="color: white; font-size: 0.75rem; font-weight: bold; margin: 0; overflow: hidden; text-overflow: ellipsis;">@currentUser.FullName</p>
+                            <p style="color: #818cf8; font-size: 10px; margin: 0; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">@currentUser.Role</p>
+                        </div>
+                    </div>
+                    <button @onclick="Logout" style="background: none; border: none; padding: 0.375rem; border-radius: 0.375rem; color: #c7d2fe; cursor: pointer; display: flex; align-items: center;" title="Cerrar Sesión">
+                        <MudIcon Icon="@Icons.Material.Filled.Logout" Size="Size.Small" />
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
+            @Body
+        </main>
+    </MudLayout>
+}
+
+@code {
+    private bool IsActive(string path)
+    {
+        var relativeUrl = Navigation.ToBaseRelativePath(Navigation.Uri);
+        
+        if (path == "/usuarios")
+        {
+            return relativeUrl.Equals("usuarios", StringComparison.OrdinalIgnoreCase) || 
+                   relativeUrl.Equals("dashboard", StringComparison.OrdinalIgnoreCase) ||
+                   string.IsNullOrWhiteSpace(relativeUrl);
+        }
+        
+        return relativeUrl.Equals(path.TrimStart('/'), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void Logout()
+    {
+        UserController.SessionUser = null;
+        Navigation.NavigateTo("/login");
+    }
+}

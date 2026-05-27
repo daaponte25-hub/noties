@@ -1,0 +1,170 @@
+@page "/"
+@page "/login"
+
+<div class="d-flex align-center justify-center min-vh-100 bg-slate-100 px-4 py-12" style="min-height: 100vh; background-color: #f1f5f9;">
+    <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="pa-6">
+        <MudCard Elevation="5" Class="rounded-xl border border-slate-200 pa-6" Style="border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);">
+            <div class="text-center mb-6">
+                <div class="d-flex justify-center mb-3">
+                    <div class="d-flex align-center justify-center rounded-xl" style="width: 56px; height: 56px; background-color: #1e1b4b; border: 2px solid #818cf8; border-radius: 0.75rem;">
+                        <span style="color: white; font-weight: 900; font-size: 1.75rem; font-family: Georgia, serif; font-style: italic;">N</span>
+                    </div>
+                </div>
+                <h2 class="text-h5 font-weight-bold" style="color: #0f172a;">Ingreso a <span style="font-family: Georgia, serif; font-style: italic; color: #1e1b4b;">Noties</span></h2>
+                <span class="d-block mt-1 font-mono uppercase text-caption" style="color: #64748b; letter-spacing: 0.1em; font-weight: 600;">Escuela Intermedia • Módulo de Gestión</span>
+            </div>
+
+            <MudForm @ref="form" @bind-IsValid="@success" Class="mt-6">
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Class="mb-4 text-xs font-weight-bold" Style="border-radius: 0.5rem; font-size: 0.75rem;">
+                        @errorMessage
+                    </MudAlert>
+                }
+
+                <div class="mb-4">
+                    <label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #94a3b8; font-size: 0.7rem; letter-spacing: 0.05em;">CORREO ELECTRÓNICO</label>
+                    <MudTextField T="string" 
+                                  @bind-Value="email" 
+                                  Required="true" 
+                                  RequiredError="El correo electrónico es requerido."
+                                  InputType="InputType.Email" 
+                                  Placeholder="ejemplo@noties.com"
+                                  Variant="Variant.Outlined" 
+                                  Margin="Margin.Dense"
+                                  Adornment="Adornment.Start" 
+                                  AdornmentIcon="@Icons.Material.Filled.Email" 
+                                  AdornmentColor="Color.Default"
+                                  Class="bg-slate-50 rounded-xl" />
+                </div>
+
+                <div class="mb-6">
+                    <label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #94a3b8; font-size: 0.7rem; letter-spacing: 0.05em;">CONTRASEÑA</label>
+                    <MudTextField T="string" 
+                                  @bind-Value="password" 
+                                  Required="true" 
+                                  RequiredError="La contraseña es requerida."
+                                  InputType="@passwordInput" 
+                                  Placeholder="••••••••"
+                                  Variant="Variant.Outlined" 
+                                  Margin="Margin.Dense"
+                                  Adornment="Adornment.Start" 
+                                  AdornmentIcon="@Icons.Material.Filled.Lock" 
+                                  AdornmentColor="Color.Default"
+                                  OnAdornmentClick="TogglePasswordVisibility"
+                                  Class="bg-slate-50 rounded-xl" />
+                </div>
+
+                <MudButton OnClick="HandleSubmit" 
+                           ButtonType="ButtonType.Button" 
+                           Variant="Variant.Filled" 
+                           Color="Color.Dark" 
+                           FullWidth="true" 
+                           Class="py-3 rounded-xl hover:bg-slate-800"
+                           Style="background-color: #1e1b4b; border-radius: 0.75rem; text-transform: none; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(30, 27, 75, 0.2);"
+                           Disabled="isLoading">
+                    @if (isLoading)
+                    {
+                        <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                        <span class="ms-2">Iniciando Sesión...</span>
+                    }
+                    else
+                    {
+                        <span>Iniciar Sesión</span>
+                    }
+                </MudButton>
+            </MudForm>
+
+            <div class="mt-6 pt-6 border-t border-slate-100" style="border-top: 1px solid #f1f5f9;">
+                <p class="text-center font-weight-bold uppercase mb-3" style="color: #94a3b8; font-size: 0.65rem; letter-spacing: 0.05em;">CREDENCIALES DE PRUEBA (CLIC P/RELLENAR)</p>
+                
+                <div class="d-flex flex-column gap-2">
+                    <MudPaper Outlined="true" Class="pa-3 rounded-xl hover:bg-slate-50 cursor-pointer text-left" 
+                              Style="border-radius: 0.75rem; border: 1px solid #e2e8f0; cursor: pointer; background: #fafafa;"
+                              @onclick="@(() => LoadCredentials("rsaparicio.21@est.ucab.edu.ve", "1234.."))">
+                        <div class="font-weight-bold text-xs" style="color: #1e293b; font-size: 0.75rem;">Admin</div>
+                        <div class="font-mono text-[10px]" style="color: #64748b; font-size: 0.65rem;">rsaparicio.21@est.ucab.edu.ve</div>
+                        <div class="text-[9px]" style="color: #94a3b8; font-size: 0.6rem; font-weight: 600;">Clave: 1234..</div>
+                    </MudPaper>
+
+                    <MudPaper Outlined="true" Class="pa-3 rounded-xl hover:bg-slate-50 cursor-pointer text-left" 
+                              Style="border-radius: 0.75rem; border: 1px solid #e2e8f0; cursor: pointer; background: #fafafa;"
+                              @onclick="@(() => LoadCredentials("daaponte.25@est.ucab.edu.ve", "daaponte.25"))">
+                        <div class="font-weight-bold text-xs" style="color: #1e293b; font-size: 0.75rem;">Docente</div>
+                        <div class="font-mono text-[10px]" style="color: #64748b; font-size: 0.65rem;">daaponte.25@est.ucab.edu.ve</div>
+                        <div class="text-[9px]" style="color: #94a3b8; font-size: 0.6rem; font-weight: 600;">Clave: daaponte.25</div>
+                    </MudPaper>
+
+                    <MudPaper Outlined="true" Class="pa-3 rounded-xl hover:bg-slate-50 cursor-pointer text-left" 
+                              Style="border-radius: 0.75rem; border: 1px solid #e2e8f0; cursor: pointer; background: #fafafa;"
+                              @onclick="@(() => LoadCredentials("cacarrero.19@est.ucab.edu.ve", "cacarrero.19"))">
+                        <div class="font-weight-bold text-xs" style="color: #1e293b; font-size: 0.75rem;">Representante</div>
+                        <div class="font-mono text-[10px]" style="color: #64748b; font-size: 0.65rem;">cacarrero.19@est.ucab.edu.ve</div>
+                        <div class="text-[9px]" style="color: #94a3b8; font-size: 0.6rem; font-weight: 600;">Clave: cacarrero.19</div>
+                    </MudPaper>
+                </div>
+            </div>
+        </MudCard>
+    </MudContainer>
+</div>
+
+@code {
+    [Inject] private UserController UserController { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+
+    private MudForm form = default!;
+    private bool success;
+    private string email = "";
+    private string password = "";
+    private string? errorMessage;
+    private bool isLoading;
+    private InputType passwordInput = InputType.Password;
+
+    private void TogglePasswordVisibility()
+    {
+        passwordInput = passwordInput == InputType.Password ? InputType.Text : InputType.Password;
+    }
+
+    private void LoadCredentials(string selectedEmail, string selectedPassword)
+    {
+        email = selectedEmail;
+        password = selectedPassword;
+        errorMessage = null;
+    }
+
+    private async Task HandleSubmit()
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            errorMessage = "Por favor complete todos los campos.";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = null;
+
+        try
+        {
+            var response = await UserController.LoginAsync(email, password);
+
+            if (!response.Success)
+            {
+                errorMessage = response.Message;
+            }
+            else
+            {
+                // Authenticated successfully - Redirect to dashboard, setting up standard Blazor cascade
+                UserController.SessionUser = response.User;
+                Navigation.NavigateTo("/dashboard");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error al iniciar sesión: {ex.Message} -- Stack: {ex.StackTrace}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

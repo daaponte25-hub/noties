@@ -1,0 +1,38 @@
+[
+  {
+    "id": "teacher-1",
+    "fullName": "Daniela Aponte",
+    "email": "daaponte.25@est.ucab.edu.ve",
+    "password": "daaponte.25",
+    "role": "Docente",
+    "status": "Activo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "coord-1",
+    "fullName": "Carlos Carrero",
+    "email": "cacarrero.19@est.ucab.edu.ve",
+    "password": "cacarrero.19",
+    "role": "Representante",
+    "status": "Activo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "coord-2",
+    "fullName": "Roger Salgado",
+    "email": "rogeryonatan@gmail.com",
+    "password": "rogeryonatan",
+    "role": "Representante",
+    "status": "Inactivo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "user-1779811387152-r28cukh6z",
+    "fullName": "Roger Aparicio",
+    "email": "rsaparicio.21@est.ucab.edu.ve",
+    "password": "1234..",
+    "role": "Administrador",
+    "status": "Activo",
+    "createdAt": "2026-05-26T16:03:07.152Z"
+  }
+]

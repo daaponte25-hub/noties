@@ -1,0 +1,29 @@
+@page "/dashboard"
+@inject NotiesBlazor.Controllers.UserController UserController
+@inject NavigationManager Navigation
+
+<div style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #f8fafc; flex-direction: column; gap: 1rem;">
+    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    <span style="font-size: 11px; font-weight: bold; uppercase: tracking-wider; color: #94a3b8; font-family: 'Inter', sans-serif;">PROCESANDO REDIRECCIÓN ACADÉMICA...</span>
+</div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        var currentUser = UserController.SessionUser;
+        if (currentUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        if (currentUser.Role == NotiesBlazor.Models.UserRole.Administrador)
+        {
+            Navigation.NavigateTo("/usuarios");
+        }
+        else
+        {
+            Navigation.NavigateTo("/notas");
+        }
+    }
+}
