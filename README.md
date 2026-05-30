@@ -24,9 +24,7 @@ Noties es una aplicación web que sigue una arquitectura Cliente-Servidor (Front
 * **JSON (JavaScript Object Notation):** Se empleará como formato de intercambio de datos para la comunicación Cliente-Servidor (a través de APIs REST). JSON también se utiliza para el almacenamiento en local de los datos.
 
 ## Arquitectura del Proyecto
-El sistema está estructurado bajo un enfoque Cliente-Servidor, dividiendo claramente la lógica de negocio (backend) de la interfaz de usuario (frontend). Esta separación permite un desarrollo modular, escalable y mantenible, facilitando la colaboración entre equipos y la evolución del sistema.
-
-Ambos componentes se comunican a través de peticiones HTTP utilizando JSON como formato de intercambio de datos, siguiendo el estilo de arquitectura RESTful.
+La arquitectura monolítica es un modelo de desarrollo de software donde todos los componentes de una aplicación (interfaz de usuario, lógica de negocio y acceso a datos) están fuertemente acoplados y se combinan en un único programa unificado
 
 ### Estructura General
 ```text
