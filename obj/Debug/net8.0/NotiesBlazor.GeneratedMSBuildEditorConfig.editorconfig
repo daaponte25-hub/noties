@@ -1,4 +1,7 @@
 is_global = true
+build_property.MudDebugAnalyzer = 
+build_property.MudAllowedAttributePattern = 
+build_property.MudIllegalParameters = 
 build_property.TargetFramework = net8.0
 build_property.TargetFrameworkIdentifier = .NETCoreApp
 build_property.TargetFrameworkVersion = v8.0
@@ -8,61 +11,60 @@ build_property.ProjectTypeGuids =
 build_property.InvariantGlobalization = 
 build_property.PlatformNeutralAssembly = 
 build_property.EnforceExtendedAnalyzerRules = 
-build_property.EntryPointFilePath = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = NotiesBlazor
 build_property.RootNamespace = NotiesBlazor
-build_property.ProjectDir = C:\Users\Alberto Carrero\Desktop\noties\
+build_property.ProjectDir = C:\Users\58414\source\repos\Noties\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\Alberto Carrero\Desktop\noties
+build_property.MSBuildProjectDirectory = C:\Users\58414\source\repos\Noties
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/App.razor]
+[C:/Users/58414/source/repos/Noties/App.razor]
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/Configuracion.razor]
+[C:/Users/58414/source/repos/Noties/Pages/Configuracion.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhY2lvbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/Dashboard.razor]
+[C:/Users/58414/source/repos/Noties/Pages/Dashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/Horarios.razor]
+[C:/Users/58414/source/repos/Noties/Pages/Horarios.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9yYXJpb3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/Login.razor]
+[C:/Users/58414/source/repos/Noties/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/Notas.razor]
+[C:/Users/58414/source/repos/Noties/Pages/Notas.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90YXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/UserFormDialog.razor]
+[C:/Users/58414/source/repos/Noties/Pages/UserFormDialog.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlckZvcm1EaWFsb2cucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/Usuarios.razor]
+[C:/Users/58414/source/repos/Noties/Pages/Usuarios.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXN1YXJpb3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Shared/MainLayout.razor]
+[C:/Users/58414/source/repos/Noties/Shared/MainLayout.razor]
 build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/_Imports.razor]
+[C:/Users/58414/source/repos/Noties/_Imports.razor]
 build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/Alberto Carrero/Desktop/noties/Pages/_Host.cshtml]
+[C:/Users/58414/source/repos/Noties/Pages/_Host.cshtml]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 

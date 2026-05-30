@@ -1,0 +1,22 @@
+[
+  {
+    "Id": 1,
+    "MateriaId": 1,
+    "Nombre": "Primer Parcial",
+    "Descripcion": "Examen teórico sobre los fundamentos de programación orientada a objetos.",
+    "Porcentaje": 20.0,
+    "Nota": 16.5,
+    "CreadoPor": "Profesor",
+    "FechaEntrega": "2026-06-15T23:59:00"
+  },
+  {
+    "Id": 2,
+    "MateriaId": 1,
+    "Nombre": "Proyecto Aula - Avance 1",
+    "Descripcion": "Entrega del diagrama de clases y arquitectura del sistema Blazor.",
+    "Porcentaje": 15.0,
+    "Nota": null,
+    "CreadoPor": "Administrador",
+    "FechaEntrega": "2026-06-30T18:00:00"
+  }
+]

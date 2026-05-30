@@ -700,23 +700,25 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\apari\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\58414\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\apari\\source\\repos\\Noties\\NotiesBlazor.csproj",
+      "projectUniqueName": "C:\\Users\\58414\\source\\repos\\Noties\\NotiesBlazor.csproj",
       "projectName": "NotiesBlazor",
-      "projectPath": "C:\\Users\\apari\\source\\repos\\Noties\\NotiesBlazor.csproj",
-      "packagesPath": "C:\\Users\\apari\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\apari\\source\\repos\\Noties\\obj\\",
+      "projectPath": "C:\\Users\\58414\\source\\repos\\Noties\\NotiesBlazor.csproj",
+      "packagesPath": "C:\\Users\\58414\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\58414\\source\\repos\\Noties\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\apari\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\58414\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -725,12 +727,10 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "projectReferences": {}
         }
@@ -749,7 +749,6 @@
     },
     "frameworks": {
       "net8.0": {
-        "framework": "net8.0",
         "targetAlias": "net8.0",
         "dependencies": {
           "MudBlazor": {
@@ -794,7 +793,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
