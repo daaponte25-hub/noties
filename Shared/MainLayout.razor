@@ -23,11 +23,9 @@
 else
 {
     <MudLayout Style="height: 100vh; overflow: hidden; background-color: #f1f5f9; display: flex; font-family: 'Inter', sans-serif;">
-        <!-- Sidebar Navigation -->
         <aside style="width: 256px; background-color: #1e1b4b; display: flex; flex-direction: column; flex-shrink: 0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); justify-content: space-between; user-select: none;">
             <div style="display: flex; flex-direction: column; flex-grow: 1;">
                 
-                <!-- Brand Logo -->
                 <div style="padding: 2rem; display: flex; align-items: center; gap: 0.75rem;">
                     <div style="width: 40px; height: 40px; background-color: #6366f1; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; border: 2px solid #a5b4fc;">
                         <span style="color: white; font-weight: bold; font-size: 1.25rem; font-family: Georgia, serif; font-style: italic;">N</span>
@@ -51,14 +49,9 @@ else
                         </a>
                     }
 
-                    <a href="/notas" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/notas") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/notas") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/notas") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
-                        <MudIcon Icon="@Icons.Material.Filled.Book" Size="Size.Small" Style="opacity: 0.6; color: #c7d2fe;" />
-                        <span>Notas y Calificaciones</span>
-                    </a>
-
-                    <a href="/horarios" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/horarios") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/horarios") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/horarios") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
-                        <MudIcon Icon="@Icons.Material.Filled.CalendarMonth" Size="Size.Small" Style="opacity: 0.6; color: #c7d2fe;" />
-                        <span>Horarios Escolares</span>
+                    <a href="/materias" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/materias") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/materias") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/materias") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
+                        <MudIcon Icon="@Icons.Material.Filled.Class" Size="Size.Small" Style="color: #a5b4fc;" />
+                        <span>Materias y Actividades</span>
                     </a>
 
                     <a href="/configuracion" style="display: flex; align-items: center; gap: 1rem; padding: 0.875rem 2rem; background-color: @(IsActive("/configuracion") ? "rgba(255,255,255,0.08)" : "transparent"); color: @(IsActive("/configuracion") ? "white" : "#c7d2fe"); border-left: 4px solid @(IsActive("/configuracion") ? "#818cf8" : "transparent"); font-size: 0.875rem; font-weight: 600; text-decoration: none; transition: background-color 0.2s;">
@@ -68,7 +61,6 @@ else
                 </nav>
             </div>
 
-            <!-- User bottom slot -->
             <div style="padding: 1.5rem; background-color: rgba(15,23,42,0.2); border-top: 1px solid rgba(129,140,248,0.15);">
                 <div style="display: flex; align-items: center; justify-content: space-between;">
                     <div style="display: flex; align-items: center; gap: 0.75rem; overflow: hidden;">
@@ -87,7 +79,6 @@ else
             </div>
         </aside>
 
-        <!-- Main Workspace Area -->
         <main style="flex-grow: 1; display: flex; flex-direction: column; overflow: hidden;">
             @Body
         </main>
@@ -104,6 +95,11 @@ else
             return relativeUrl.Equals("usuarios", StringComparison.OrdinalIgnoreCase) || 
                    relativeUrl.Equals("dashboard", StringComparison.OrdinalIgnoreCase) ||
                    string.IsNullOrWhiteSpace(relativeUrl);
+        }
+
+        if (path == "/materias")
+        {
+            return relativeUrl.StartsWith("materias", StringComparison.OrdinalIgnoreCase);
         }
         
         return relativeUrl.Equals(path.TrimStart('/'), StringComparison.OrdinalIgnoreCase);

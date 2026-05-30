@@ -1,0 +1,17 @@
+[
+  {
+    "Id": 1,
+    "Nombre": "Matemáticas",
+    "Profesor": "Carlos Mendoza"
+  },
+  {
+    "Id": 2,
+    "Nombre": "Historia",
+    "Profesor": "Ana Rodríguez"
+  },
+  {
+    "Id": 3,
+    "Nombre": "Física",
+    "Profesor": "Carlos Mendoza"
+  }
+]

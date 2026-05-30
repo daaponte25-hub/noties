@@ -161,6 +161,8 @@ namespace NotiesBlazor.Controllers
             await SaveActividadesAsync(actividades);
         }
 
+        
+
         private async Task SaveActividadesAsync(List<Actividad> actividades)
         {
             lock (_lock)

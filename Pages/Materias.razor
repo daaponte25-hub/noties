@@ -1,0 +1,204 @@
+@page "/materias"
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@using static NotiesBlazor.Controllers.MateriasController
+@inject MateriasController MateriasCtrl
+@inject UserController UserCtrl
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
+@if (currentUser == null || isLoading)
+{
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; height: 100vh;">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    </div>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-6">
+        <div class="d-flex align-center justify-space-between mb-6">
+            <div>
+                <MudText Typo="Typo.h4" Color="Color.Primary" Style="font-weight: 700;">
+                    @tituloVista
+                </MudText>
+                <MudText Typo="Typo.subtitle1" Class="text-muted">
+                    @subtituloVista
+                </MudText>
+            </div>
+            
+            @if (esAdmin)
+            {
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           StartIcon="@Icons.Material.Filled.Add"
+                           OnClick="AbrirFormularioMateria"
+                           Class="rounded-lg">
+                    Nueva Materia
+                </MudButton>
+            }
+        </div>
+
+        @if (materiasFiltradas == null || !materiasFiltradas.Any())
+        {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="rounded-lg">
+                @(esDocente ? "Usted no tiene materias asignadas actualmente." : "No hay materias registradas en el sistema.")
+            </MudAlert>
+        }
+        else
+        {
+            <MudGrid>
+                @foreach (var materia in materiasFiltradas)
+                {
+                    <MudItem xs="12" sm="6" md="4">
+                        <MudCard Elevation="3" Class="rounded-xl hover-card py-2" Style="border-top: 5px solid var(--mud-palette-primary); height: 100%;">
+                            <MudCardHeader>
+                                <CardHeaderContent>
+                                    <MudText Typo="Typo.h6" Style="font-weight: 600;">@(materia.Nombre ?? "Materia sin nombre")</MudText>
+                                    <div class="d-flex align-center mt-1 text-muted">
+                                        <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1"/>
+                                        <MudText Typo="Typo.body2">Prof: @(materia.Profesor ?? "No asignado")</MudText>
+                                    </div>
+                                </CardHeaderContent>
+                                <CardHeaderActions>
+                                    <MudAvatar Color="Color.Primary" Variant="Variant.Outlined" Size="Size.Small">
+                                        @if (!string.IsNullOrEmpty(materia.Nombre))
+                                        {
+                                            @materia.Nombre.Substring(0, Math.Min(2, materia.Nombre.Length)).ToUpper()
+                                        }
+                                        else
+                                        {
+                                            <span>MT</span>
+                                        }
+                                    </MudAvatar>
+                                </CardHeaderActions>
+                            </MudCardHeader>
+                            
+                            <MudCardActions Class="justify-end px-4">
+                                <MudButton Variant="Variant.Filled" 
+                                           Color="Color.Primary" 
+                                           EndIcon="@Icons.Material.Filled.ArrowForward" 
+                                           Size="Size.Small"
+                                           Class="rounded-pill"
+                                           OnClick="@(() => IrAActividades(materia.Id))">
+                                    @(esRepresentante ? "Ver Notas" : "Ver Actividades")
+                                </MudButton>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                }
+            </MudGrid>
+        }
+    </MudContainer>
+}
+
+<style>
+    .hover-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--mud-elevation-6);
+    }
+</style>
+
+@code {
+    private User? currentUser;
+    private List<Materia> materiasFiltradas = new();
+    private bool isLoading = true;
+    
+    private bool esAdmin;
+    private bool esDocente;
+    private bool esRepresentante;
+    
+    private string tituloVista = "Asignaturas";
+    private string subtituloVista = "Gestión y visualización académica.";
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        currentUser = UserCtrl.SessionUser;
+        
+        if (currentUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        esAdmin = currentUser.Role == UserRole.Administrador;
+        esDocente = currentUser.Role == UserRole.Docente;
+        esRepresentante = currentUser.Role == UserRole.Representante;
+
+        ConfigurarTextosInterfaz();
+        await CargarMaterias();
+        
+        isLoading = false;
+    }
+
+    private void ConfigurarTextosInterfaz()
+    {
+        if (esAdmin)
+        {
+            tituloVista = "Control de Materias Globales";
+            subtituloVista = "Panel administrativo para dar de alta asignaturas y delegar profesores.";
+        }
+        else if (esDocente)
+        {
+            tituloVista = "Mis Materias Asignadas";
+            subtituloVista = "Seleccione una cátedra para planificar evaluaciones y registrar calificaciones.";
+        }
+        else if (esRepresentante)
+        {
+            tituloVista = "Materias de mi Representado";
+            subtituloVista = "Consulte de forma directa el avance evaluativo y las notas del estudiante.";
+        }
+    }
+
+    private async Task CargarMaterias()
+    {
+        try
+        {
+            var todasLasMaterias = await MateriasCtrl.GetMateriasAsync();
+            if (todasLasMaterias == null)
+            {
+                todasLasMaterias = new List<Materia>();
+            }
+
+            if (esAdmin || esRepresentante)
+            {
+                materiasFiltradas = todasLasMaterias;
+            }
+            else if (esDocente)
+            {
+                var nombreDocente = currentUser?.FullName;
+                materiasFiltradas = todasLasMaterias
+                    .Where(m => !string.IsNullOrEmpty(m.Profesor) && m.Profesor.Equals(nombreDocente, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al procesar el catálogo escolar: {ex.Message}", Severity.Error);
+            materiasFiltradas = new List<Materia>();
+        }
+    }
+
+    private async Task AbrirFormularioMateria()
+    {
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        
+        var dialog = await DialogService.ShowAsync<FormularioMateria>("", opciones);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await CargarMaterias(); 
+            StateHasChanged();
+        }
+    }
+
+    private void IrAActividades(int materiaId)
+    {
+        Navigation.NavigateTo($"/materias/{materiaId}/actividades");
+    }
+}

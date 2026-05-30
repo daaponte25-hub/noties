@@ -11,6 +11,8 @@ builder.Services.AddMudServices();
 
 // Add Controller as singleton/scoped to handle clean JSON flat-file read/writes
 builder.Services.AddSingleton<UserController>();
+builder.Services.AddSingleton<MateriasController>();
+builder.Services.AddSingleton<ActividadController>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();

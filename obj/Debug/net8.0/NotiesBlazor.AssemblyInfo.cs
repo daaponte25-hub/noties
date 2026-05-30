@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NotiesBlazor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+56e569a16731f18d3fe6ffb4e81bc2d23f558e54")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fd27a14204671f07da2da7b016d4c76c5b81f768")]
 [assembly: System.Reflection.AssemblyProductAttribute("NotiesBlazor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NotiesBlazor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

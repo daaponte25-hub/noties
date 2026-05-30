@@ -1,0 +1,182 @@
+@page "/materias/{MateriaId:int}/actividades"
+@using noties.Models
+@using NotiesBlazor.Models
+@using NotiesBlazor.Controllers
+@inject ActividadController ActividadCtrl
+@inject MateriasController MateriasCtrl
+@inject UserController UserCtrl
+@inject NavigationManager Navigation
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+@if (isLoading || UserCtrl.SessionUser == null)
+{
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; height: 100vh;">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    </div>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+        
+        @if (materiaActual != null)
+        {
+            <MudText Typo="Typo.h4" GutterBottom="true">Actividades de: @materiaActual.Nombre</MudText>
+            <MudText Typo="Typo.subtitle1" Class="text-muted mb-4">
+                Porcentaje evaluado de la materia: <b>@PorcentajeTotalAcumulado%</b> / 100%
+            </MudText>
+        }
+
+        @if (puedeModificar)
+        {
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       Class="mb-4" 
+                       Disabled="@(PorcentajeTotalAcumulado >= 100)"
+                       OnClick="AbrirFormularioActividad">
+                Nueva Actividad
+            </MudButton>
+        }
+
+        @if (listaActividades == null || !listaActividades.Any())
+        {
+            <MudAlert Severity="Severity.Info" Class="rounded-lg">No hay actividades de evaluación asignadas.</MudAlert>
+        }
+        else
+        {
+            <MudSimpleTable Style="overflow-x: auto;" Class="rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Actividad</th>
+                        <th>Descripción</th>
+                        <th>Ponderación</th>
+                        <th>Nota (0-20)</th>
+                        @if (puedeModificar) { <th>Acciones</th> } 
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var actividad in listaActividades)
+                    {
+                        <tr>
+                            <td>@(actividad.Nombre ?? "Sin nombre")</td>
+                            <td>@(actividad.Descripcion ?? "Sin descripción")</td>
+                            <td>@actividad.Porcentaje%</td>
+                            <td>
+                                @if (actividad.Nota.HasValue)
+                                {
+                                    <MudChip T="double" Color="@(actividad.Nota.Value >= 10 ? Color.Success : Color.Error)" Size="Size.Small">
+                                        @actividad.Nota.Value
+                                    </MudChip>
+                                }
+                                else
+                                {
+                                    <span class="text-muted"><i>Sin calificar</i></span>
+                                }
+                            </td>
+                            @if (puedeModificar)
+                            {
+                                <td>
+                                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Warning" Size="Size.Small" />
+                                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => EliminarActividad(actividad.Id))" />
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </MudSimpleTable>
+        }
+    </MudContainer>
+}
+
+@code {
+    [Parameter] public int MateriaId { get; set; }
+    
+    private List<Actividad> listaActividades = new();
+    private dynamic? materiaActual; 
+    private bool puedeModificar; 
+    private bool isLoading = true;
+
+    private double PorcentajeTotalAcumulado => listaActividades?.Sum(a => a.Porcentaje) ?? 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+
+        if (UserCtrl.SessionUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        var rol = UserCtrl.SessionUser.Role;
+        puedeModificar = (rol == UserRole.Administrador || rol == UserRole.Docente);
+
+        try
+        {
+            materiaActual = await MateriasCtrl.GetMateriaByIdAsync(MateriaId);
+            if (materiaActual == null)
+            {
+                Snackbar.Add("La materia especificada no existe.", Severity.Warning);
+                Navigation.NavigateTo("/materias");
+                return;
+            }
+
+            await CargarActividades();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar la vista: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task CargarActividades()
+    {
+        try
+        {
+            var actividades = await ActividadCtrl.GetActividadesByMateriaAsync(MateriaId);
+            // Blindaje contra retornos nulos del controlador externo
+            listaActividades = actividades ?? new List<Actividad>();
+        }
+        catch (Exception)
+        {
+            listaActividades = new List<Actividad>();
+            throw;
+        }
+    }
+
+    private async Task AbrirFormularioActividad()
+    {
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        var parametros = new DialogParameters<FormularioActividad> { { x => x.MateriaId, MateriaId } };
+        
+        var dialog = await DialogService.ShowAsync<FormularioActividad>("", parametros, opciones);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            isLoading = true;
+            await CargarActividades(); 
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task EliminarActividad(int id)
+    {
+        try
+        {
+            await ActividadCtrl.DeleteActividadAsync(id);
+            Snackbar.Add("Actividad eliminada con éxito.", Severity.Success);
+            await CargarActividades();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}

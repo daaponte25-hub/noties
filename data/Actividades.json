@@ -1,0 +1,12 @@
+[
+  {
+    "Id": 1,
+    "MateriaId": 4,
+    "Nombre": "Prueba",
+    "Descripcion": "NUEVA",
+    "Porcentaje": 70,
+    "Nota": 0,
+    "FechaEntrega": null,
+    "CreadoPor": "Roger Aparicio"
+  }
+]

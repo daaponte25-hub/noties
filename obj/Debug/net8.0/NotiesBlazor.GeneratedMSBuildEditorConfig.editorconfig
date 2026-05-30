@@ -29,6 +29,10 @@ build_property.EnableCodeStyleSeverity =
 build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/58414/source/repos/Noties/Pages/Actividades.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWN0aXZpZGFkZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/58414/source/repos/Noties/Pages/Configuracion.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhY2lvbi5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
@@ -37,12 +41,24 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/58414/source/repos/Noties/Pages/FormularioActividad.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9ybXVsYXJpb0FjdGl2aWRhZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/Pages/FormularioMateria.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9ybXVsYXJpb01hdGVyaWEucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/58414/source/repos/Noties/Pages/Horarios.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSG9yYXJpb3MucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/58414/source/repos/Noties/Pages/Login.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/Pages/Materias.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/58414/source/repos/Noties/Pages/Notas.razor]
