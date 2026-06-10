@@ -1,0 +1,47 @@
+[
+  {
+    "id": "admin-default-id",
+    "fullName": "Administrador de Noties",
+    "email": "admin@noties.com",
+    "password": "admin",
+    "role": "Administrador",
+    "status": "Activo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "teacher-1",
+    "fullName": "Sonia Rodr\u00EDguez",
+    "email": "sonia.rodriguez@noties.edu",
+    "password": "sonia",
+    "role": "Docente",
+    "status": "Activo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "coord-1",
+    "fullName": "Carlos G\u00F3mez",
+    "email": "carlos.gomez@noties.edu",
+    "password": "carlos",
+    "role": "Representante",
+    "status": "Activo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "student-1",
+    "fullName": "Mateo Fern\u00E1ndez",
+    "email": "mateo.fernandez@noties.edu",
+    "password": "student",
+    "role": "Representante",
+    "status": "Inactivo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
+    "id": "user-1779811387152-r28cukh6z",
+    "fullName": "Roger Aparicio",
+    "email": "rsaparicio.21@est.ucab.edu.ve",
+    "password": "1234..",
+    "role": "Administrador",
+    "status": "Activo",
+    "createdAt": "2026-05-26T16:03:07.152Z"
+  }
+]
