@@ -1,0 +1,98 @@
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@using noties.Models
+@using Materia = NotiesBlazor.Controllers.MateriasController.Materia
+@inject MateriasController MateriasCtrl
+@inject EstudianteController EstudianteCtrl
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<div class="mb-6">
+    <MudText Typo="Typo.h4" Color="Color.Primary" Style="font-weight: 700;">Materias de sus Representados</MudText>
+    <MudText Typo="Typo.subtitle1" Class="text-muted">Seleccione una materia para revisar las actividades y calificaciones de sus estudiantes.</MudText>
+</div>
+
+@if (materias == null || !materias.Any())
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="rounded-lg">
+        No hay materias asignadas actualmente a los estudiantes bajo su responsabilidad.
+    </MudAlert>
+}
+else
+{
+    <MudGrid>
+        @foreach (var materia in materias)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="3" Class="rounded-xl hover-card py-2" Style="border-top: 5px solid var(--mud-palette-primary); height: 100%;">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6" Style="font-weight: 600;">@(materia.Nombre ?? "Materia sin nombre")</MudText>
+                            <div class="d-flex align-center mt-1 text-muted">
+                                <MudIcon Icon="@Icons.Material.Filled.Person" Size="Size.Small" Class="mr-1"/>
+                                <MudText Typo="Typo.body2">Profesor: @(materia.Profesor ?? "No asignado")</MudText>
+                            </div>
+                            @if (estudiantesPorMateria.TryGetValue(materia.Id, out var alumnos) && alumnos.Any())
+                            {
+                                <div class="mt-2 text-muted" style="font-size: 0.85rem;">
+                                    <strong>Alumnos:</strong> @string.Join(", ", alumnos)
+                                </div>
+                            }
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardActions Class="justify-end px-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="rounded-pill" OnClick="@(() => IrAActividades(materia.Id))">
+                            Ver Actividades
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@code {
+    [Parameter] public User CurrentUser { get; set; } = default!;
+
+    private List<Materia> materias = new();
+    private Dictionary<int, List<string>> estudiantesPorMateria = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var estudiantes = await EstudianteCtrl.GetEstudiantesAsync();
+            var representados = estudiantes
+                .Where(e => e.RepresentanteId == CurrentUser.Id)
+                .ToList();
+
+            if (!representados.Any())
+            {
+                return;
+            }
+
+            var materiaIds = representados
+                .SelectMany(e => e.MateriaIds)
+                .Distinct()
+                .ToHashSet();
+
+            var todas = await MateriasCtrl.GetMateriasAsync();
+            materias = todas.Where(m => materiaIds.Contains(m.Id)).ToList();
+
+            estudiantesPorMateria = materias
+                .ToDictionary(
+                    m => m.Id,
+                    m => representados
+                        .Where(e => e.MateriaIds.Contains(m.Id))
+                        .Select(e => e.FullName)
+                        .Distinct()
+                        .ToList());
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar las materias del representante: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void IrAActividades(int id) => Navigation.NavigateTo($"/materias/{id}/actividades");
+}

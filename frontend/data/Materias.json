@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "Id": 1,
+    "Nombre": "quimica",
+    "Profesor": "Sonia Rodr\u00EDguez"
+  },
+  {
+    "Id": 2,
+    "Nombre": "hola",
+    "Profesor": "DA Aponte"
+  },
+  {
+    "Id": 3,
+    "Nombre": "pruieba no se ve docente",
+    "Profesor": "DA Aponte"
+  }
+]

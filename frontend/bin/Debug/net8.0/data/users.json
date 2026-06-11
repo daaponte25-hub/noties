@@ -1,27 +1,52 @@
 [
   {
+    "id": "admin-default-id",
+    "fullName": "Administrador de Noties",
+    "email": "admin@noties.com",
+    "password": "admin",
+    "role": "Administrador",
+    "status": "Activo",
+    "createdAt": "2026-05-26T15:47:05.133Z"
+  },
+  {
     "id": "teacher-1",
-    "fullName": "Daniela Aponte",
-    "email": "daaponte.25@est.ucab.edu.ve",
-    "password": "daaponte.25",
+    "fullName": "Sonia Rodr\u00EDguez",
+    "email": "sonia.rodriguez@noties.edu",
+    "password": "sonia",
     "role": "Docente",
     "status": "Activo",
     "createdAt": "2026-05-26T15:47:05.133Z"
   },
   {
     "id": "coord-1",
-    "fullName": "Carlos Carrero",
-    "email": "cacarrero.19@est.ucab.edu.ve",
-    "password": "cacarrero.19",
+    "fullName": "Carlos G\u00F3mez",
+    "email": "carlos.gomez@noties.edu",
+    "password": "carlos",
     "role": "Representante",
     "status": "Activo",
     "createdAt": "2026-05-26T15:47:05.133Z"
   },
+  {    "id": "teacher-daaponte",
+    "fullName": "DA Aponte",
+    "email": "daaponte.25@est.ucab.edu.ve",
+    "password": "daaponte.25",
+    "role": "Docente",
+    "status": "Activo",
+    "createdAt": "2026-06-09T00:00:00.000Z"
+  },
   {
-    "id": "coord-2",
-    "fullName": "Roger Salgado",
-    "email": "rogeryonatan@gmail.com",
-    "password": "rogeryonatan",
+    "id": "rep-cacarrero",
+    "fullName": "Carmen Acarreño",
+    "email": "cacarrero.19@est.ucab.edu.ve",
+    "password": "cacarrero.19",
+    "role": "Representante",
+    "status": "Activo",
+    "createdAt": "2026-06-09T00:00:00.000Z"
+  },
+  {    "id": "student-1",
+    "fullName": "Mateo Fern\u00E1ndez",
+    "email": "mateo.fernandez@noties.edu",
+    "password": "student",
     "role": "Representante",
     "status": "Inactivo",
     "createdAt": "2026-05-26T15:47:05.133Z"
@@ -34,23 +59,5 @@
     "role": "Administrador",
     "status": "Activo",
     "createdAt": "2026-05-26T16:03:07.152Z"
-  },
-  {
-    "id": "user-1780162580223-61321914",
-    "fullName": "Maria Ova",
-    "email": "mariamovalles@usb.ve",
-    "password": "123456",
-    "role": "Docente",
-    "status": "Activo",
-    "createdAt": "2026-05-30T17:36:20.2231681Z"
-  },
-  {
-    "id": "user-1780165036846-deed65dc",
-    "fullName": "carloss",
-    "email": "carlos@gmail.com",
-    "password": "1234",
-    "role": "Docente",
-    "status": "Activo",
-    "createdAt": "2026-05-30T18:17:16.8461219Z"
   }
 ]

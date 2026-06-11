@@ -52,7 +52,6 @@ namespace NotiesBlazor.Controllers
             }
         }
 
-
         public async Task<Actividad?> GetActividadByIdAsync(int id)
         {
             var actividades = await GetActividadesAsync();
@@ -101,6 +100,11 @@ namespace NotiesBlazor.Controllers
             newActividad.Nombre = newActividad.Nombre.Trim();
             newActividad.Descripcion = newActividad.Descripcion?.Trim() ?? "";
             newActividad.CreadoPor = newActividad.CreadoPor.Trim();
+            
+            if (string.IsNullOrEmpty(newActividad.NotasPorAlumno))
+            {
+                newActividad.NotasPorAlumno = string.Empty;
+            }
 
             actividades.Add(newActividad);
             await SaveActividadesAsync(actividades);
@@ -132,16 +136,12 @@ namespace NotiesBlazor.Controllers
                 throw new Exception($"El porcentaje acumulado superaría el 100% (Permitido restante: {100 - porcentajeRestante}%).");
             }
 
-            if (updateDetails.Nota.HasValue && (updateDetails.Nota.Value < 0 || updateDetails.Nota.Value > 20))
-            {
-                throw new Exception("La nota debe estar en el rango de 0 a 20.");
-            }
-
             targetActividad.Nombre = updateDetails.Nombre.Trim();
             targetActividad.Descripcion = updateDetails.Descripcion?.Trim() ?? "";
             targetActividad.Porcentaje = updateDetails.Porcentaje;
-            targetActividad.Nota = updateDetails.Nota; 
             targetActividad.FechaEntrega = updateDetails.FechaEntrega;
+            
+            targetActividad.NotasPorAlumno = updateDetails.NotasPorAlumno ?? string.Empty;
 
             await SaveActividadesAsync(actividades);
             return targetActividad;
@@ -160,8 +160,6 @@ namespace NotiesBlazor.Controllers
             actividades.Remove(targetActividad);
             await SaveActividadesAsync(actividades);
         }
-
-        
 
         private async Task SaveActividadesAsync(List<Actividad> actividades)
         {

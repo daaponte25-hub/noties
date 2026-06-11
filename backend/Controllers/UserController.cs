@@ -86,6 +86,26 @@ namespace NotiesBlazor.Controllers
                     },
                     new User
                     {
+                        Id = "teacher-daaponte",
+                        FullName = "DA Aponte",
+                        Email = "daaponte.25@est.ucab.edu.ve",
+                        Password = "daaponte.25",
+                        Role = UserRole.Docente,
+                        Status = UserStatus.Activo,
+                        CreatedAt = "2026-06-09T00:00:00.000Z"
+                    },
+                    new User
+                    {
+                        Id = "rep-cacarrero",
+                        FullName = "Carmen Acarreño",
+                        Email = "cacarrero.19@est.ucab.edu.ve",
+                        Password = "cacarrero.19",
+                        Role = UserRole.Representante,
+                        Status = UserStatus.Activo,
+                        CreatedAt = "2026-06-09T00:00:00.000Z"
+                    },
+                    new User
+                    {
                         Id = "student-1",
                         FullName = "Mateo Fernández",
                         Email = "mateo.fernandez@noties.edu",

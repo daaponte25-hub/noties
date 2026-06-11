@@ -1,8 +1,8 @@
-@page "/materias"
+@page "/estudiantes"
 @attribute [Authorize]
-@using NotiesBlazor.Controllers
+@using NotiesBlazor.Components
 @using NotiesBlazor.Models
-@using noties.Models
+@using NotiesBlazor.Services
 @inject UserController UserCtrl
 @inject NavigationManager Navigation
 
@@ -18,15 +18,19 @@ else
         @switch (currentUser.Role)
         {
             case UserRole.Administrador:
-                <VistaMateriasAdmin CurrentUser="currentUser" />
+                <VistaEstudiantesAdmin CurrentUser="currentUser" />
                 break;
 
             case UserRole.Docente:
-                <VistaMateriasDocente CurrentUser="currentUser" />
+                <VistaEstudiantesDocente CurrentUser="currentUser" />
                 break;
-
-            case UserRole.Representante:
-                <VistaMateriasRepresentante CurrentUser="currentUser" />
+                
+            default:
+                var descriptor = DescriptorRolFactory.Crear(currentUser.Role);
+                <div style="text-align: center; padding: 2rem;">
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+                    <p style="margin-top: 1rem; color: #64748b; font-size: 0.875rem;">@descriptor.ObtenerDashboardInfo()</p>
+                </div>
                 break;
         }
     </MudContainer>
@@ -43,6 +47,12 @@ else
         {
             Navigation.NavigateTo("/login");
             return;
+        }
+
+        if (currentUser.Role == UserRole.Representante)
+        {
+            Navigation.NavigateTo("/materias");
+            return; 
         }
     }
 }

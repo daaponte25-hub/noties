@@ -1,32 +1,17 @@
 [
   {
     "Id": 1,
-    "Nombre": "Matem\u00E1ticas",
-    "Profesor": "Carlos Mendoza"
+    "Nombre": "quimica",
+    "Profesor": "Sonia Rodr\u00EDguez"
   },
   {
     "Id": 2,
-    "Nombre": "Historia",
-    "Profesor": "Ana Rodr\u00EDguez"
+    "Nombre": "hola",
+    "Profesor": "DA Aponte"
   },
   {
     "Id": 3,
-    "Nombre": "F\u00EDsica",
-    "Profesor": "Carlos Mendoza"
-  },
-  {
-    "Id": 4,
-    "Nombre": "Quimica",
-    "Profesor": "Daniela Aponte"
-  },
-  {
-    "Id": 5,
-    "Nombre": "trigo",
-    "Profesor": "Daniela Aponte"
-  },
-  {
-    "Id": 6,
-    "Nombre": "Ingenieria de software",
-    "Profesor": "Maria Ova"
+    "Nombre": "pruieba no se ve docente",
+    "Profesor": "DA Aponte"
   }
 ]

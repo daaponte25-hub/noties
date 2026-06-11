@@ -26,8 +26,24 @@
     "status": "Activo",
     "createdAt": "2026-05-26T15:47:05.133Z"
   },
+  {    "id": "teacher-daaponte",
+    "fullName": "DA Aponte",
+    "email": "daaponte.25@est.ucab.edu.ve",
+    "password": "daaponte.25",
+    "role": "Docente",
+    "status": "Activo",
+    "createdAt": "2026-06-09T00:00:00.000Z"
+  },
   {
-    "id": "student-1",
+    "id": "rep-cacarrero",
+    "fullName": "Carmen Acarreño",
+    "email": "cacarrero.19@est.ucab.edu.ve",
+    "password": "cacarrero.19",
+    "role": "Representante",
+    "status": "Activo",
+    "createdAt": "2026-06-09T00:00:00.000Z"
+  },
+  {    "id": "student-1",
     "fullName": "Mateo Fern\u00E1ndez",
     "email": "mateo.fernandez@noties.edu",
     "password": "student",

@@ -1,5 +1,9 @@
 @page "/"
 @page "/login"
+@using NotiesBlazor.Controllers
+@inject UserController UserController
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
 
 <div class="d-flex align-center justify-center min-vh-100 bg-slate-100 px-4 py-12" style="min-height: 100vh; background-color: #f1f5f9;">
     <MudContainer MaxWidth="MaxWidth.ExtraSmall" Class="pa-6">
@@ -109,9 +113,6 @@
 </div>
 
 @code {
-    [Inject] private UserController UserController { get; set; } = default!;
-    [Inject] private NavigationManager Navigation { get; set; } = default!;
-
     private MudForm form = default!;
     private bool success;
     private string email = "";
@@ -153,8 +154,13 @@
             }
             else
             {
-                // Authenticated successfully - Redirect to dashboard, setting up standard Blazor cascade
                 UserController.SessionUser = response.User;
+
+                if (AuthStateProvider is CustomAuthenticationStateProvider customAuth)
+                {
+                    customAuth.NotificarCambioAutenticacion();
+                }
+
                 Navigation.NavigateTo("/dashboard");
             }
         }

@@ -14,7 +14,7 @@
         <MudTextField T="string" Label="Nombre de la Actividad" @bind-Value="actividad.Nombre" Required="true" Class="mb-3" />
         <MudTextField T="string" Label="Descripción (Temas, pautas...)" @bind-Value="actividad.Descripcion" Lines="2" Class="mb-3" />
         <MudNumericField T="double" Label="Porcentaje de Evaluación (1-100)" @bind-Value="actividad.Porcentaje" Min="1" Max="100" Required="true" Suffix="%" Class="mb-3" />
-        <MudNumericField T="double?" Label="Nota Inicial Opcional (0-20)" @bind-Value="actividad.Nota" Min="0" Max="20" HelperText="Dejar vacío si aún no se ha entregado" />
+        
     </DialogContent>
     <DialogActions>
         <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="Cancelar">Cancelar</MudButton>

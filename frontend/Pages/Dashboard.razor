@@ -1,29 +1,37 @@
 @page "/dashboard"
+@attribute [Authorize]
 @inject NotiesBlazor.Controllers.UserController UserController
 @inject NavigationManager Navigation
 
 <div style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: #f8fafc; flex-direction: column; gap: 1rem;">
     <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
-    <span style="font-size: 11px; font-weight: bold; uppercase: tracking-wider; color: #94a3b8; font-family: 'Inter', sans-serif;">PROCESANDO REDIRECCIÓN ACADÉMICA...</span>
+    <span style="font-size: 11px; font-weight: bold; letter-spacing: 0.1em; color: #94a3b8; font-family: 'Inter', sans-serif;">
+        CONFIGURANDO ESPACIO DE TRABAJO...
+    </span>
 </div>
 
 @code {
     protected override void OnInitialized()
     {
-        var currentUser = UserController.SessionUser;
-        if (currentUser == null)
-        {
-            Navigation.NavigateTo("/login");
-            return;
-        }
+        var currentUser = UserController.SessionUser!;
 
-        if (currentUser.Role == NotiesBlazor.Models.UserRole.Administrador)
+        switch (currentUser.Role)
         {
-            Navigation.NavigateTo("/usuarios");
-        }
-        else
-        {
-            Navigation.NavigateTo("/materias");
+            case NotiesBlazor.Models.UserRole.Administrador:
+                Navigation.NavigateTo("/usuarios");
+                break;
+
+            case NotiesBlazor.Models.UserRole.Docente:
+                Navigation.NavigateTo("/materias"); 
+                break;
+
+            case NotiesBlazor.Models.UserRole.Representante:
+                Navigation.NavigateTo("/materias");
+                break;
+
+            default:
+                Navigation.NavigateTo("/login");
+                break;
         }
     }
 }

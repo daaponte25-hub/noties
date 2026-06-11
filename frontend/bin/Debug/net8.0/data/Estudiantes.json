@@ -1,0 +1,76 @@
+[
+  {
+    "Id": "est-1781062238958",
+    "FullName": "fulanitode tal",
+    "RepresentanteId": "student-1",
+    "MateriaIds": [],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T03:30:38.9585828Z"
+  },
+  {
+    "Id": "est-1781062264447",
+    "FullName": "fulanita de tal",
+    "RepresentanteId": "student-1",
+    "MateriaIds": [],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T03:31:04.4471217Z"
+  },
+  {
+    "Id": "est-1781062284605",
+    "FullName": "prueba",
+    "RepresentanteId": "coord-1",
+    "MateriaIds": [],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T03:31:24.6052072Z"
+  },
+  {
+    "Id": "est-1781063562679",
+    "FullName": "huol",
+    "RepresentanteId": "rep-cacarrero",
+    "MateriaIds": [
+      1
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T03:52:42.6795055Z"
+  },
+  {
+    "Id": "est-1781064609740",
+    "FullName": "prueba 2",
+    "RepresentanteId": "student-1",
+    "MateriaIds": [
+      1
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T04:10:09.7407317Z"
+  },
+  {
+    "Id": "est-1781135809967",
+    "FullName": "fulano prueba",
+    "RepresentanteId": "rep-cacarrero",
+    "MateriaIds": [
+      2
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T23:56:49.9682773Z"
+  },
+  {
+    "Id": "est-1781135940109",
+    "FullName": "prueba no se ve",
+    "RepresentanteId": "student-1",
+    "MateriaIds": [
+      1
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-06-10T23:59:00.1099910Z"
+  },
+  {
+    "Id": "est-1781136003840",
+    "FullName": "no se ve",
+    "RepresentanteId": "student-1",
+    "MateriaIds": [
+      3
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-06-11T00:00:03.8410311Z"
+  }
+]

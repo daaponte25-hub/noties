@@ -141,3 +141,4 @@ C:\Users\58414\source\repos\Noties\frontend\obj\Debug\net8.0\refint\NotiesBlazor
 C:\Users\58414\source\repos\Noties\frontend\obj\Debug\net8.0\NotiesBlazor.pdb
 C:\Users\58414\source\repos\Noties\frontend\obj\Debug\net8.0\NotiesBlazor.genruntimeconfig.cache
 C:\Users\58414\source\repos\Noties\frontend\obj\Debug\net8.0\ref\NotiesBlazor.dll
+C:\Users\58414\source\repos\Noties\frontend\bin\Debug\net8.0\data\Estudiantes.json

@@ -33,16 +33,20 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWN0aXZpZGFkZXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/58414/source/repos/Noties/frontend/Pages/Configuracion.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29uZmlndXJhY2lvbi5yYXpvcg==
-build_metadata.AdditionalFiles.CssScope = 
-
 [C:/Users/58414/source/repos/Noties/frontend/Pages/Dashboard.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRGFzaGJvYXJkLnJhem9y
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/58414/source/repos/Noties/frontend/Pages/Estudiantes.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXN0dWRpYW50ZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/58414/source/repos/Noties/frontend/Pages/FormularioActividad.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9ybXVsYXJpb0FjdGl2aWRhZC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/FormularioEstudiante.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRm9ybXVsYXJpb0VzdHVkaWFudGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/58414/source/repos/Noties/frontend/Pages/FormularioMateria.razor]
@@ -57,8 +61,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYXMucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/58414/source/repos/Noties/frontend/Pages/Notas.razor]
-build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTm90YXMucmF6b3I=
+[C:/Users/58414/source/repos/Noties/frontend/Pages/PlanillaCalificacionesDialog.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGxhbmlsbGFDYWxpZmljYWNpb25lc0RpYWxvZy5yYXpvcg==
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/58414/source/repos/Noties/frontend/Pages/UserFormDialog.razor]
@@ -67,6 +71,38 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/58414/source/repos/Noties/frontend/Pages/Usuarios.razor]
 build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXN1YXJpb3MucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/UsuariosPage.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXN1YXJpb3NQYWdlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaActividadesGestion.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFBY3RpdmlkYWRlc0dlc3Rpb24ucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaActividadesRepresentante.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFBY3RpdmlkYWRlc1JlcHJlc2VudGFudGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaEstudiantesAdmin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFFc3R1ZGlhbnRlc0FkbWluLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaEstudiantesDocente.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFFc3R1ZGlhbnRlc0RvY2VudGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaMateriasAdmin.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFNYXRlcmlhc0FkbWluLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaMateriasDocente.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFNYXRlcmlhc0RvY2VudGUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/58414/source/repos/Noties/frontend/Pages/VistaMateriasRepresentante.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlzdGFNYXRlcmlhc1JlcHJlc2VudGFudGUucmF6b3I=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/58414/source/repos/Noties/frontend/Shared/MainLayout.razor]

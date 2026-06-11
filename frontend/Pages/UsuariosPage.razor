@@ -1,0 +1,97 @@
+@page "/usuarios"
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@inject UserController UserCtrl
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-6">
+    <div class="d-flex justify-space-between align-center mb-4">
+        <MudText Typo="Typo.h4">Gestión de Usuarios</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NuevoUsuario">Crear Usuario</MudButton>
+    </div>
+
+    @if (usuarios == null)
+    {
+        <div class="d-flex justify-center my-6"><MudProgressCircular Indeterminate="true" Color="Color.Primary"/></div>
+    }
+    else if (!usuarios.Any())
+    {
+        <MudAlert Severity="Severity.Info">No hay usuarios registrados.</MudAlert>
+    }
+    else
+    {
+        <MudTable Items="usuarios" Hover="true">
+            <HeaderContent>
+                <MudTh>Nombre</MudTh>
+                <MudTh>Email</MudTh>
+                <MudTh>Rol</MudTh>
+                <MudTh>Estado</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>@context.FullName</MudTd>
+                <MudTd>@context.Email</MudTd>
+                <MudTd>@context.Role</MudTd>
+                <MudTd>@context.Status</MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" OnClick="@(() => EditUsuario(context))" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" OnClick="@(() => DeleteUsuario(context.Id))" />
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    }
+</MudContainer>
+
+@code {
+    private List<User> usuarios = null!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarUsuarios();
+    }
+
+    private async Task CargarUsuarios()
+    {
+        usuarios = await UserCtrl.GetUsersAsync();
+    }
+
+    private async Task NuevoUsuario()
+    {
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<UserFormDialog>("Crear Usuario", null, opciones);
+        var res = await dialog.Result;
+        if (res != null && !res.Canceled)
+        {
+            await CargarUsuarios();
+            StateHasChanged();
+        }
+    }
+
+    private async Task EditUsuario(User u)
+    {
+        var param = new DialogParameters<UserFormDialog> { { x => x.UserToEdit, u } };
+        var dialog = await DialogService.ShowAsync<UserFormDialog>("Editar Usuario", param);
+        var res = await dialog.Result;
+        if (res != null && !res.Canceled)
+        {
+            await CargarUsuarios();
+            StateHasChanged();
+        }
+    }
+
+    private async Task DeleteUsuario(string id)
+    {
+        try
+        {
+            await UserCtrl.DeleteUserAsync(id);
+            Snackbar.Add("Usuario eliminado", Severity.Success);
+            await CargarUsuarios();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}

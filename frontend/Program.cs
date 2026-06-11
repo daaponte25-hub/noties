@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MudBlazor.Services;
 using NotiesBlazor.Controllers;
+using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,10 @@ builder.Services.AddMudServices();
 builder.Services.AddSingleton<UserController>();
 builder.Services.AddSingleton<MateriasController>();
 builder.Services.AddSingleton<ActividadController>();
+builder.Services.AddSingleton<EstudianteController>();
+
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
