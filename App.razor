@@ -1,0 +1,28 @@
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <LayoutView Layout="@typeof(MainLayout)">
+                        <div style="padding: 2rem; text-align: center;">
+                            <MudText Typo="Typo.h5" Color="Color.Error" GutterBottom="true">Acceso No Autorizado</MudText>
+                            <MudText Typo="Typo.body1">No tienes permisos para ver esta página o tu sesión ha expirado.</MudText>
+                        </div>
+                    </LayoutView>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <div style="padding: 2rem; text-align: center;">
+                    <MudText Typo="Typo.h5" Color="Color.Warning" GutterBottom="true">Ruta no encontrada</MudText>
+                    <MudText Typo="Typo.body1">Disculpe, la opción de ruta especificada no existe.</MudText>
+                </div>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+}

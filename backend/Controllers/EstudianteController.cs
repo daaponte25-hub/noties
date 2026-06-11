@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using noties.Models;
 
 namespace NotiesBlazor.Controllers
 {
-    public class EstudianteController
+    public class EstudianteController: ControllerBase
     {
         private readonly string _filePath;
         private static readonly object _lock = new();
@@ -16,7 +17,7 @@ namespace NotiesBlazor.Controllers
         public EstudianteController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment? env = null)
         {
             string rootDir = env?.ContentRootPath ?? Directory.GetCurrentDirectory();
-            _filePath = Path.Combine(rootDir, "data", "Estudiantes.json");
+            _filePath = Path.Combine(rootDir, @"backend\\data", "Estudiantes.json");
 
             string? dir = Path.GetDirectoryName(_filePath);
             if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
@@ -24,9 +25,9 @@ namespace NotiesBlazor.Controllers
                 Directory.CreateDirectory(dir);
             }
 
-            if (!File.Exists(_filePath))
+            if (!System.IO.File.Exists(_filePath))
             {
-                File.WriteAllText(_filePath, "[]");
+                System.IO.File.WriteAllText(_filePath, "[]");
             }
         }
 
@@ -34,9 +35,9 @@ namespace NotiesBlazor.Controllers
         {
             try
             {
-                if (!File.Exists(_filePath)) return new List<Estudiante>();
+                if (!System.IO.File.Exists(_filePath)) return new List<Estudiante>();
 
-                string jsonContent = await File.ReadAllTextAsync(_filePath);
+                string jsonContent = await System.IO.File.ReadAllTextAsync(_filePath);
                 if (string.IsNullOrWhiteSpace(jsonContent)) return new List<Estudiante>();
 
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -83,7 +84,7 @@ namespace NotiesBlazor.Controllers
 
                 lock (_lock)
                 {
-                    File.WriteAllText(_filePath, jsonContent);
+                    System.IO.File.WriteAllText(_filePath, jsonContent);
                 }
 
                 await Task.CompletedTask;

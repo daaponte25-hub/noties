@@ -34,23 +34,5 @@
     "role": "Administrador",
     "status": "Activo",
     "createdAt": "2026-05-26T16:03:07.152Z"
-  },
-  {
-    "id": "user-1780162580223-61321914",
-    "fullName": "Maria Ova",
-    "email": "mariamovalles@usb.ve",
-    "password": "123456",
-    "role": "Docente",
-    "status": "Activo",
-    "createdAt": "2026-05-30T17:36:20.2231681Z"
-  },
-  {
-    "id": "user-1780165036846-deed65dc",
-    "fullName": "carloss",
-    "email": "carlos@gmail.com",
-    "password": "1234",
-    "role": "Docente",
-    "status": "Activo",
-    "createdAt": "2026-05-30T18:17:16.8461219Z"
   }
 ]

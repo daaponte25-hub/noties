@@ -16,8 +16,8 @@ namespace NotiesBlazor.Services
     /// </summary>
     public class AdministradorDescriptor : DescriptorRol
     {
-        public override string ObtenerMenuPrincipal() => "/usuarios";
-        public override string ObtenerDashboardInfo() => "Panel de Control Global: Gestión de Base de Datos y Usuarios.";
+        public override string ObtenerMenuPrincipal() { return "/usuarios"; }
+        public override string ObtenerDashboardInfo() { return "Panel de Control Global: Gestión de Base de Datos y Usuarios."; }
     }
 
     /// <summary>
@@ -25,8 +25,8 @@ namespace NotiesBlazor.Services
     /// </summary>
     public class DocenteDescriptor : DescriptorRol
     {
-        public override string ObtenerMenuPrincipal() => "/materias";
-        public override string ObtenerDashboardInfo() => "Panel del Docente: Gestión de Notas, Evaluaciones y Asistencias.";
+        public override string ObtenerMenuPrincipal() { return "/materias"; }
+        public override string ObtenerDashboardInfo() { return "Panel del Docente: Gestión de Notas, Evaluaciones y Asistencias."; }
     }
 
     /// <summary>
@@ -34,8 +34,8 @@ namespace NotiesBlazor.Services
     /// </summary>
     public class RepresentanteDescriptor : DescriptorRol
     {
-        public override string ObtenerMenuPrincipal() => "/materias";
-        public override string ObtenerDashboardInfo() => "Panel del Representante: Consulta de Rendimiento Académico.";
+        public override string ObtenerMenuPrincipal() { return "/materias"; }
+        public override string ObtenerDashboardInfo() { return "Panel del Representante: Consulta de Rendimiento Académico."; }
     }
 
     /// <summary>

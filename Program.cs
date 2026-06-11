@@ -1,0 +1,48 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using MudBlazor.Services;
+using NotiesBlazor.Controllers;
+using Microsoft.AspNetCore.Components.Authorization;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Add MudBlazor Services
+builder.Services.AddMudServices();
+
+// Add Controller as singleton/scoped to handle clean JSON flat-file read/writes
+builder.Services.AddSingleton<UserController>();
+builder.Services.AddSingleton<MateriasController>();
+builder.Services.AddSingleton<ActividadController>();
+builder.Services.AddSingleton<EstudianteController>();
+
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+
+builder.Services.AddRazorPages(options =>
+{
+    options.RootDirectory = "/frontend/Pages";
+});
+
+builder.Services.AddServerSideBlazor();
+
+var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+
+app.UseRouting();
+
+app.MapBlazorHub(); 
+var env = app.Services.GetRequiredService<IWebHostEnvironment>();
+Console.WriteLine($"Content Root Path: {env.ContentRootPath}");
+Console.WriteLine($"Web Root Path (wwwroot): {env.WebRootPath}");
+app.MapFallbackToPage("/_Host");
+
+app.Run();

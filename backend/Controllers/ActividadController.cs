@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using noties.Models; 
 
 namespace NotiesBlazor.Controllers
 {
-    public class ActividadController
+    public class ActividadController : ControllerBase
     {
         private readonly string _filePath;
         private static readonly object _lock = new();
@@ -17,7 +18,7 @@ namespace NotiesBlazor.Controllers
         public ActividadController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment? env = null)
         {
             string rootDir = env?.ContentRootPath ?? Directory.GetCurrentDirectory();
-            _filePath = Path.Combine(rootDir, "data", "Actividades.json");
+            _filePath = Path.Combine(rootDir, @"backend\\data", "Actividades.json");
 
             string? dir = Path.GetDirectoryName(_filePath);
             if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
@@ -25,9 +26,9 @@ namespace NotiesBlazor.Controllers
                 Directory.CreateDirectory(dir);
             }
 
-            if (!File.Exists(_filePath))
+            if (!System.IO.File.Exists(_filePath))
             {
-                File.WriteAllText(_filePath, "[]");
+                System.IO.File.WriteAllText(_filePath, "[]");
             }
 
             _materiasController = new MateriasController(env);
@@ -37,9 +38,9 @@ namespace NotiesBlazor.Controllers
         {
             try
             {
-                if (!File.Exists(_filePath)) return new List<Actividad>();
+                if (!System.IO.File.Exists(_filePath)) return new List<Actividad>();
 
-                string jsonContent = await File.ReadAllTextAsync(_filePath);
+                string jsonContent = await System.IO.File.ReadAllTextAsync(_filePath);
                 if (string.IsNullOrWhiteSpace(jsonContent)) return new List<Actividad>();
 
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -167,7 +168,7 @@ namespace NotiesBlazor.Controllers
             {
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string jsonString = JsonSerializer.Serialize(actividades, options);
-                File.WriteAllText(_filePath, jsonString);
+                System.IO.File.WriteAllText(_filePath, jsonString);
             }
             await Task.CompletedTask;
         }

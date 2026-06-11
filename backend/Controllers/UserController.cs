@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using NotiesBlazor.Models;
 
 namespace NotiesBlazor.Controllers
 {
-    public class UserController
+    public class UserController: ControllerBase
     {
         private readonly string _filePath;
         private static readonly object _lock = new();
@@ -19,7 +20,7 @@ namespace NotiesBlazor.Controllers
         {
             // Resolve path to flat file "data/users.json" using WebHostEnvironment if available, otherwise fallback
             string rootDir = env?.ContentRootPath ?? Directory.GetCurrentDirectory();
-            _filePath = Path.Combine(rootDir, "data", "users.json");
+            _filePath = Path.Combine(rootDir, @"backend\\data", "users.json");
 
             // Safeguard directory existence
             string? dir = Path.GetDirectoryName(_filePath);
@@ -30,7 +31,7 @@ namespace NotiesBlazor.Controllers
 
             // Create and seed file with default administrative and teaching staff if empty or not present
             bool shouldSeed = false;
-            if (!File.Exists(_filePath))
+            if (!System.IO.File.Exists(_filePath))
             {
                 shouldSeed = true;
             }
@@ -38,7 +39,7 @@ namespace NotiesBlazor.Controllers
             {
                 try
                 {
-                    string content = File.ReadAllText(_filePath);
+                    string content = System.IO.File.ReadAllText(_filePath);
                     if (string.IsNullOrWhiteSpace(content) || content.Trim() == "[]")
                     {
                         shouldSeed = true;
@@ -127,7 +128,7 @@ namespace NotiesBlazor.Controllers
                 };
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string seedJson = JsonSerializer.Serialize(defaultUsers, options);
-                File.WriteAllText(_filePath, seedJson);
+                System.IO.File.WriteAllText(_filePath, seedJson);
             }
         }
 
@@ -138,9 +139,9 @@ namespace NotiesBlazor.Controllers
         {
             try
             {
-                if (!File.Exists(_filePath)) return new List<User>();
+                if (!System.IO.File.Exists(_filePath)) return new List<User>();
 
-                string jsonContent = await File.ReadAllTextAsync(_filePath);
+                string jsonContent = await System.IO.File.ReadAllTextAsync(_filePath);
                 if (string.IsNullOrWhiteSpace(jsonContent)) return new List<User>();
 
                 var options = new JsonSerializerOptions
@@ -172,7 +173,7 @@ namespace NotiesBlazor.Controllers
                 // Write with thread-safety locks
                 lock (_lock)
                 {
-                    File.WriteAllText(_filePath, jsonContent);
+                    System.IO.File.WriteAllText(_filePath, jsonContent);
                 }
                 await Task.CompletedTask;
             }
