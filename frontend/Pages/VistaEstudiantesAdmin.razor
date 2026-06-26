@@ -1,0 +1,98 @@
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@inject EstudianteController EstudianteCtrl
+@inject MateriasController MateriasCtrl
+@inject UserController UserCtrl
+@inject IDialogService DialogService
+
+<div class="d-flex align-center justify-space-between mb-6">
+    <div>
+        <MudText Typo="Typo.h4" Color="Color.Primary" Style="font-weight: 700;">Estudiantes</MudText>
+        <MudText Typo="Typo.subtitle1" Class="text-muted">Panel de Administración Global.</MudText>
+    </div>
+    
+    <MudButton Variant="Variant.Filled" 
+               Color="Color.Primary" 
+               StartIcon="@Icons.Material.Filled.Add" 
+               OnClick="AbrirFormularioEstudiante" 
+               Class="rounded-lg">
+        Nuevo Estudiante
+    </MudButton>
+</div>
+
+@if (listaEstudiantes == null || !listaEstudiantes.Any())
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="rounded-lg">
+        No hay estudiantes registrados en el sistema.
+    </MudAlert>
+}
+else
+{
+    <MudTable Items="listaEstudiantes" Dense="true" Hover="true">
+        <HeaderContent>
+            <MudTh>Nombre</MudTh>
+            <MudTh>Representante</MudTh>
+            <MudTh>Materias</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.FullName</MudTd>
+            <MudTd>@GetRepresentanteName(context.RepresentanteId)</MudTd>
+            <MudTd>
+                @if (context.MateriaIds == null || !context.MateriaIds.Any())
+                {
+                    <span class="text-muted">Sin materias asignadas</span>
+                }
+                else
+                {
+                    @foreach (var mid in context.MateriaIds)
+                    {
+                        var m = materiasLookup.GetValueOrDefault(mid);
+                        <MudChip T="string" Class="mr-1">@(m?.Nombre ?? "Materia desconocida")</MudChip>
+                    }
+                }
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+}
+
+@code {
+    [Parameter] 
+    public NotiesBlazor.Models.User CurrentUser { get; set; } = default!;
+
+    private List<noties.Models.Estudiante> listaEstudiantes = new();
+    private Dictionary<int, NotiesBlazor.Controllers.MateriasController.Materia?> materiasLookup = new();
+    private List<NotiesBlazor.Models.User> todosLosUsuarios = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        todosLosUsuarios = await UserCtrl.GetUsersAsync();
+        await CargarEstudiantes();
+    }
+
+    private async Task CargarEstudiantes()
+    {
+        listaEstudiantes = await EstudianteCtrl.GetEstudiantesAsync();
+        
+        var materias = await MateriasCtrl.GetMateriasAsync();
+        materiasLookup = materias.ToDictionary(m => m.Id, m => (NotiesBlazor.Controllers.MateriasController.Materia?)m);
+    }
+
+    private string GetRepresentanteName(string repId)
+    {
+        var user = todosLosUsuarios.FirstOrDefault(u => u.Id == repId);
+        return user?.FullName ?? "-";
+    }
+
+    private async Task AbrirFormularioEstudiante()
+    {
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        var dialog = await DialogService.ShowAsync<FormularioEstudiante>("", opciones);
+        var result = await dialog.Result;
+        
+        if (result != null && !result.Canceled)
+        {
+            await CargarEstudiantes();
+            StateHasChanged();
+        }
+    }
+}

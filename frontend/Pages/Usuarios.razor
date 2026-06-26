@@ -1,0 +1,399 @@
+@page "/usuarios"
+@using NotiesBlazor.Controllers
+
+@if (currentUser == null)
+{
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; font-weight: bold; height: 100vh;">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    </div>
+}
+else if (currentUser.Role != UserRole.Administrador)
+{
+    <!-- Restricted Access View for Non-Admin trying to access "/usuarios" -->
+    <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; background-color: #f8fafc; text-align: center; height: 100vh; width: 100%;">
+        <div style="max-width: 440px; background-color: white; padding: 2rem; border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center;">
+            <div style="width: 64px; height: 64px; background-color: #fef2f2; border: 2px solid #fca5a5; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: #dc2626; margin-bottom: 1.5rem; box-shadow: 0 4px 6px -1px rgba(220,38,38,0.1);">
+                <MudIcon Icon="@Icons.Material.Filled.GppBad" Style="font-size: 2rem;" />
+            </div>
+            
+            <h2 style="font-size: 1.5rem; font-weight: 900; color: #0f172a; margin-bottom: 0.5rem; letter-spacing: -0.025em;">Acceso No Disponible</h2>
+            <span style="font-size: 10px; font-weight: bold; text-transform: uppercase; color: #94a3b8; letter-spacing: 0.1em; margin-bottom: 1rem;">Módulo de Usuarios</span>
+
+            <p style="font-size: 0.875rem; color: #475569; line-height: 1.5; margin-bottom: 1.5rem;">
+                Lo sentimos, <span style="font-weight: bold; color: #1e293b;">@currentUser.FullName</span>. Esta sección no se encuentra disponible para su rol (<span style="font-weight: bold; color: #0f172a;">@currentUser.Role</span>). La Gestión de Usuarios y Roles es de acceso exclusivo para Administradores.
+            </p>
+
+            <div style="width: 100%; background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 0.75rem; padding: 1rem; margin-bottom: 1.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.375rem;">
+                <span style="font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase;">Su Rol Identificado</span>
+                <div style="display: flex; align-items: center; gap: 0.5rem; background-color: #e0e7ff; color: #3730a3; padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: bold; border: 1px solid #c7d2fe;">
+                    <MudIcon Icon="@(currentUser.Role == UserRole.Docente ? Icons.Material.Filled.School : Icons.Material.Filled.EscalatorWarning)" Size="Size.Small" />
+                    @currentUser.Role
+                </div>
+            </div>
+
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Dark" 
+                       OnClick="Logout" 
+                       Class="w-full py-2 rounded-xl"
+                       Style="background-color: #1e1b4b; color: white; border-radius: 0.75rem; text-transform: none; font-weight: bold; width: 100%;">
+                Cerrar Sesión Activa
+            </MudButton>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Admin Workspace Header -->
+    <header style="height: 80px; background-color: white; border-bottom: 1px solid #e2e8f0; padding: 0 2.5rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+        <div style="text-align: left;">
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: #0f172a; margin: 0; letter-spacing: -0.025em; text-align: left;">Gestión de Usuarios</h2>
+            <p style="font-size: 11px; color: #64748b; font-weight: 600; font-style: italic; margin: 0; text-align: left;">Noties • Módulo Administrativo</p>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="position: relative; display: flex; align-items: center;">
+                <MudTextField @bind-Value="searchQuery" 
+                              Placeholder="Buscar por nombre o correo..." 
+                              Adornment="Adornment.Start" 
+                              AdornmentIcon="@Icons.Material.Filled.Search" 
+                              Variant="Variant.Outlined" 
+                              Margin="Margin.Dense"
+                              Style="background-color: #f8fafc; font-size: 12px; width: 260px;" />
+            </div>
+
+            <MudIconButton Icon="@Icons.Material.Filled.Sync" 
+                           Color="Color.Default" 
+                           OnClick="LoadData" 
+                           Style="border: 1px solid #e2e8f0; border-radius: 0.5rem; background-color: white;" 
+                           Title="Sincronizar base de datos" />
+
+            <MudButton Variant="Variant.Filled" 
+                       Color="Color.Primary" 
+                       Class="rounded-lg py-2"
+                       Style="background-color: #4f46e5; color: white; font-weight: bold; font-size: 11px; border-radius: 0.5rem; text-transform: none;"
+                       OnClick="() => OpenUserFormDialog(null)">
+                + Nuevo Usuario
+            </MudButton>
+        </div>
+    </header>
+
+    <!-- Dashboard Analytics & Management Grid -->
+    <div style="flex-grow: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- KPI Indicators Panel -->
+        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+            
+            <!-- KPI Card 1: Total Users -->
+            <MudPaper Class="pa-5 d-flex align-center justify-space-between rounded-xl" Style="border: 1px solid #e2e8f0; border-radius: 0.75rem; box-shadow: none;">
+                <div style="text-align: left;">
+                    <span style="font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; display: block; text-align: left;">USUARIOS TOTALES</span>
+                    <h4 style="font-size: 1.875rem; font-weight: 900; color: #000; margin: 4px 0 0 0; text-align: left;">@users.Count</h4>
+                    <span style="font-size: 11px; color: #64748b; font-style: italic; display: block; text-align: left;">Matrícula y personal escolar</span>
+                </div>
+                <div style="width: 44px; height: 44px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; background-color: #e0e7ff; color: #4f46e5;">
+                    <MudIcon Icon="@Icons.Material.Filled.Groups" />
+                </div>
+            </MudPaper>
+
+            <!-- KPI Card 2: Status States -->
+            <MudPaper Class="pa-5 d-flex align-center justify-space-between rounded-xl" Style="border: 1px solid #e2e8f0; border-radius: 0.75rem; box-shadow: none;">
+                <div style="text-align: left;">
+                    <span style="font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; display: block; text-align: left;">ESTADOS OPERATIVOS</span>
+                    <div class="d-flex align-center gap-4 mt-2">
+                        <div class="d-flex flex-column" style="text-align: left;">
+                            <div class="d-flex align-center gap-1">
+                                <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #10b981;"></div>
+                                <span style="font-size: 1.1rem; font-weight: bold; color: #10b981;">@users.Count(u => u.Status == UserStatus.Activo)</span>
+                            </div>
+                            <span style="font-size: 9px; color: #94a3b8; font-weight: bold; text-transform: uppercase;">Activos</span>
+                        </div>
+                        <div style="width: 1px; height: 24px; background-color: #e2e8f0;"></div>
+                        <div class="d-flex flex-column" style="text-align: left;">
+                            <div class="d-flex align-center gap-1">
+                                <div style="width: 6px; height: 6px; border-radius: 50%; background-color: #64748b;"></div>
+                                <span style="font-size: 1.1rem; font-weight: bold; color: #64748b;">@users.Count(u => u.Status == UserStatus.Inactivo)</span>
+                            </div>
+                            <span style="font-size: 9px; color: #94a3b8; font-weight: bold; text-transform: uppercase;">Inactivos</span>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 44px; height: 44px; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center; background-color: #d1fae5; color: #059669;">
+                    <MudIcon Icon="@Icons.Material.Filled.OfflinePin" />
+                </div>
+            </MudPaper>
+
+            <!-- KPI Card 3: Roles breakdown -->
+            <MudPaper Class="pa-5 d-flex flex-column justify-space-between rounded-xl" Style="border: 1px solid #e2e8f0; border-radius: 0.75rem; min-height: 106px; box-shadow: none;">
+                <span style="font-size: 10px; color: #94a3b8; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; text-align: left; display: block;">DESGLOSE POR ROLES</span>
+                <div style="display: flex; flex-direction: column; gap: 0.25rem; font-size: 12px;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #f1f5f9; padding-bottom: 2px;">
+                        <span style="color: #64748b;">Administradores</span>
+                        <span style="font-weight: bold; color: #000;">@users.Count(u => u.Role == UserRole.Administrador)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #f1f5f9; padding-bottom: 2px;">
+                        <span style="color: #64748b;">Docentes</span>
+                        <span style="font-weight: bold; color: #000;">@users.Count(u => u.Role == UserRole.Docente)</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed #f1f5f9; padding-bottom: 2px;">
+                        <span style="color: #64748b;">Representantes</span>
+                        <span style="font-weight: bold; color: #000;">@users.Count(u => u.Role == UserRole.Representante)</span>
+                    </div>
+                </div>
+            </MudPaper>
+        </section>
+
+        <!-- Users Directory Layout Table -->
+        <MudTable Items="@FilteredUsers" Dense="false" Hover="true" Bordered="false" Striped="true" Class="rounded-xl animate-none" Style="border: 1px solid #e2e8f0; border-radius: 0.75rem; box-shadow: none; overflow: hidden; background-color: white;" Loading="@isLoadingData" LoadingProgressColor="Color.Info">
+            <ToolBarContent>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; font-size: 11px;">
+                    <span style="color: #64748b; font-weight: bold; text-transform: uppercase; letter-spacing: 0.05em; text-align: left;">Filtros de Perfiles</span>
+                    
+                    <div class="d-flex align-center gap-4">
+                        <div class="d-flex align-center gap-1.5" style="font-size: 11px; font-weight: bold; color: #94a3b8;">
+                            <span>ROL:</span>
+                            <select @bind="selectedRoleFilter" style="background-color: white; border: 1px solid #cbd5e1; border-radius: 0.375rem; padding: 4px 8px; font-size: 11px; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                                <option value="Todos">Todos</option>
+                                <option value="Administrador">Administrador</option>
+                                <option value="Docente">Docente</option>
+                                <option value="Representante">Representante</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex align-center gap-1.5" style="font-size: 11px; font-weight: bold; color: #94a3b8;">
+                            <span>ESTADO:</span>
+                            <select @bind="selectedStatusFilter" style="background-color: white; border: 1px solid #cbd5e1; border-radius: 0.375rem; padding: 4px 8px; font-size: 11px; font-weight: 600; color: #334155; outline: none; cursor: pointer;">
+                                <option value="Todos">Todos</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Inactivo">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </ToolBarContent>
+            
+            <HeaderContent>
+                <MudTh Style="font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; text-align: left;">Usuario / Correo</MudTh>
+                <MudTh Style="font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; text-align: left;">Rol del Sistema</MudTh>
+                <MudTh Style="font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; text-align: left;">Estado</MudTh>
+                <MudTh Style="font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; text-align: left;">Fecha Registro</MudTh>
+                <MudTh Style="font-size: 10px; font-weight: bold; color: #94a3b8; text-transform: uppercase; text-align: right;">Acciones</MudTh>
+            </HeaderContent>
+            
+            <RowTemplate>
+                <MudTd DataLabel="Usuario">
+                    <div style="display: flex; flex-direction: column; padding: 4px 0; text-align: left;">
+                        <span style="font-weight: 600; color: #0f172a; @(context.Status == UserStatus.Inactivo ? "text-decoration: line-through; color: #94a3b8;" : "")">
+                            @context.FullName
+                            @if(context.Email == currentUser?.Email)
+                            {
+                                <span style="font-size: 9px; font-weight: bold; background-color: #e0e7ff; color: #3730a3; padding: 2px 4px; border-radius: 4px; margin-left: 8px; letter-spacing: 0.05em;">TÚ</span>
+                            }
+                        </span>
+                        <span style="font-family: monospace; color: #64748b; font-size: 11px;">@context.Email</span>
+                    </div>
+                </MudTd>
+
+                <MudTd DataLabel="Rol">
+                    @if (context.Role == UserRole.Administrador)
+                    {
+                        <span style="background-color: #faf5ff; border: 1px solid #f3e8ff; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: bold; color: #6b21a8; display: inline-flex; align-items: center; gap: 4px;">
+                            <MudIcon Icon="@Icons.Material.Filled.Shield" Size="Size.Small" Style="font-size: 0.85rem;" /> Admin
+                        </span>
+                    }
+                    else if (context.Role == UserRole.Docente)
+                    {
+                        <span style="background-color: #f0f9ff; border: 1px solid #e0f2fe; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: bold; color: #0369a1; display: inline-flex; align-items: center; gap: 4px;">
+                            <MudIcon Icon="@Icons.Material.Filled.AutoStories" Size="Size.Small" Style="font-size: 0.85rem;" /> Docente
+                        </span>
+                    }
+                    else
+                    {
+                        <span style="background-color: #fdf2f8; border: 1px solid #fce7f3; border-radius: 6px; padding: 2px 8px; font-size: 11px; font-weight: bold; color: #be185d; display: inline-flex; align-items: center; gap: 4px;">
+                            <MudIcon Icon="@Icons.Material.Filled.FamilyRestroom" Size="Size.Small" Style="font-size: 0.85rem;" /> Representante
+                        </span>
+                    }
+                </MudTd>
+
+                <MudTd DataLabel="Estado">
+                    <button @onclick="() => ToggleStatus(context)" 
+                            disabled="@(context.Email == currentUser?.Email)"
+                            style="border: none; background: none; cursor: @(context.Email == currentUser?.Email ? "not-allowed" : "pointer"); padding: 0;">
+                        <span style="background-color: @(context.Status == UserStatus.Activo ? "#ecfdf5" : "#f1f5f9"); border: 1px solid @(context.Status == UserStatus.Activo ? "#a7f3d0" : "#cbd5e1"); border-radius: 6px; padding: 4px 8px; font-size: 11px; font-weight: bold; color: @(context.Status == UserStatus.Activo ? "#047857" : "#64748b"); display: inline-flex; align-items: center; gap: 6px;">
+                            <div style="width: 7px; height: 7px; border-radius: 50%; background-color: @(context.Status == UserStatus.Activo ? "#10b981" : "#94a3b8");"></div>
+                            @context.Status.ToString()
+                        </span>
+                    </button>
+                </MudTd>
+
+                <MudTd DataLabel="Fecha Registro">
+                    <span style="font-size: 11px; color: #64748b; font-weight: 500;">
+                        @(DateTime.TryParse(context.CreatedAt, out var date) ? date.ToString("dd/MM/yyyy") : context.CreatedAt)
+                    </span>
+                </MudTd>
+
+                <MudTd DataLabel="Acciones" Style="text-align: right;">
+                    <div style="display: flex; align-items: center; justify-content: flex-end; gap: 4px;">
+                        <MudButton Variant="Variant.Text" 
+                                   Color="Color.Primary" 
+                                   Size="Size.Small" 
+                                   OnClick="() => OpenUserFormDialog(context)"
+                                   Style="text-transform: none; font-weight: bold; font-size: 11px;">
+                            Editar
+                        </MudButton>
+                        
+                        <span style="color: #e2e8f0; margin: 0 4px;">|</span>
+
+                        @if (deletingId == context.Id)
+                        {
+                            <div style="background-color: #fee2e2; border: 1px solid #fca5a5; border-radius: 0.25rem; padding: 2px 4px; display: inline-flex; align-items: center; gap: 4px;">
+                                <span style="font-size: 9px; font-weight: bold; color: #b91c1c;">Borrar?</span>
+                                <button @onclick="() => ConfirmDelete(context.Id)" style="background-color: #dc2626; color: white; border: none; font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 2px; cursor: pointer;">Sí</button>
+                                <button @onclick="() => deletingId = null" style="background-color: white; border: 1px solid #cbd5e1; font-size: 9px; font-weight: bold; padding: 1px 4px; border-radius: 2px; cursor: pointer;">No</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <button @onclick="() => RequestDelete(context)" 
+                                    disabled="@(context.Email == currentUser?.Email)"
+                                    style="background: none; border: none; color: #94a3b8; cursor: @(context.Email == currentUser?.Email ? "not-allowed" : "pointer"); font-weight: bold; font-size: 11px; @(context.Email == currentUser?.Email ? "" : "hover:text-red-500 hover:underline")">
+                                Eliminar
+                            </button>
+                        }
+                    </div>
+                </MudTd>
+            </RowTemplate>
+
+            <PagerContent>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; font-size: 11px; color: #64748b; background-color: #f8fafc; border-top: 1px solid #e2e8f0; width: 100%;">
+                    <span>Total de @FilteredUsers.Count() usuarios encontrados en consulta</span>
+                    <span style="font-family: monospace; font-size: 10px; color: #94a3b8;">Noties BD: users.json</span>
+                </div>
+            </PagerContent>
+        </MudTable>
+
+    </div>
+}
+
+@code {
+    [Inject] private UserController UserController { get; set; } = default!;
+    [Inject] private NavigationManager Navigation { get; set; } = default!;
+    [Inject] private IDialogService DialogService { get; set; } = default!;
+
+    private User? currentUser;
+    private List<User> users = new();
+    private bool isLoadingData = true;
+
+    // Filter properties
+    private string searchQuery = "";
+    private string selectedRoleFilter = "Todos";
+    private string selectedStatusFilter = "Todos";
+
+    // Deletion states
+    private string? deletingId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        currentUser = UserController.SessionUser;
+        
+        if (currentUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        isLoadingData = true;
+        users = await UserController.GetUsersAsync();
+        isLoadingData = false;
+        StateHasChanged();
+    }
+
+    private IEnumerable<User> FilteredUsers
+    {
+        get
+        {
+            return users.Where(u =>
+            {
+                bool matchesSearch = string.IsNullOrWhiteSpace(searchQuery) ||
+                                     u.FullName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) ||
+                                     u.Email.Contains(searchQuery, StringComparison.OrdinalIgnoreCase);
+
+                bool matchesRole = selectedRoleFilter == "Todos" ||
+                                   u.Role.ToString().Equals(selectedRoleFilter, StringComparison.OrdinalIgnoreCase);
+
+                bool matchesStatus = selectedStatusFilter == "Todos" ||
+                                     u.Status.ToString().Equals(selectedStatusFilter, StringComparison.OrdinalIgnoreCase);
+
+                return matchesSearch && matchesRole && matchesStatus;
+            });
+        }
+    }
+
+    private async Task ToggleStatus(User user)
+    {
+        if (user.Email == currentUser?.Email) return;
+
+        var targetStatus = user.Status == UserStatus.Activo ? UserStatus.Inactivo : UserStatus.Activo;
+        try
+        {
+            user.Status = targetStatus;
+            await UserController.UpdateUserAsync(user.Id, user);
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            ShowWarning($"No se pudo cambiar el estado: {ex.Message}");
+        }
+    }
+
+    private void RequestDelete(User user)
+    {
+        if (user.Email == currentUser?.Email) return;
+        deletingId = user.Id;
+    }
+
+    private async Task ConfirmDelete(string userId)
+    {
+        try
+        {
+            await UserController.DeleteUserAsync(userId);
+            deletingId = null;
+            await LoadData();
+        }
+        catch (Exception ex)
+        {
+            ShowWarning($"Error al eliminar: {ex.Message}");
+        }
+    }
+
+    private async Task OpenUserFormDialog(User? user)
+    {
+        var parameters = new DialogParameters<UserFormDialog>();
+        parameters.Add(x => x.UserToEdit, user);
+        var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small };
+
+        var dialogTitle = user == null ? "Agregar Nuevo Miembro" : "Modificar Perfil";
+        var dialog = await DialogService.ShowAsync<UserFormDialog>(dialogTitle, parameters, options);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await LoadData();
+        }
+    }
+
+    private void Logout()
+    {
+        UserController.SessionUser = null;
+        Navigation.NavigateTo("/login");
+    }
+
+    private void ShowWarning(string msg)
+    {
+        DialogService.ShowMessageBox("Notificación del Sistema", msg);
+    }
+}

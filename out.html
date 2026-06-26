@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Noties - Gestión de Usuarios</title>
+    <base href="/" />
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&family=Playfair+Display:ital,wght@1,900&display=swap" rel="stylesheet">
+    
+    <!-- MudBlazor Styles -->
+    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    
+    <!-- Custom Tailwind-like Utilities or Inline Styling -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    
+    <!--Blazor:{"type":"server","prerenderId":"956b92e99df041bc8254f21c3b652ce9","key":{"locationHash":"77D12F14A8105320B1AAED6AE7E689DA0EC4483270A645E84079EAA0FFDF550D:0","formattedComponentKey":""},"sequence":0,"descriptor":"CfDJ8FuBSuG7Kh1Ijiwzr3NdtL3bQwKxI8ABlbixezCnGgvq6sZ93RiRLUo5UgHgUP6bm5tyLohHZ\u002B\u002BEUThOSRzWwFjer9lpNQE16gUnXeAadZBo\u002B6Jj6Kx5IQ3DmX7CPgGU/5atgEf6CwOTssSdkBh\u002BMbXjFJtaJsBOwFeZkSPZnKYg9gRn2t3O4y9IQE2XK36lriDtww4/eMRp8F8W9\u002B066DDVLYpH\u002BDeYXJKolr\u002BMXOs/tyUSIjpS/5QK01UJTxx556oah6fSf4Jz18qTpjRsZWb9bqcsb/rnRT7W2mCulOLbigW8wGjmqb4znw\u002BN7LMSS65vFdH4tTbfU229MnisPXiC0vrkawa7oHJZmD3FJSxKnSaG0u0Rb5TZDxxcqHHCzRRQWi6Lt4Q52MFEzKPA3dwzLZ2MPfBIDI/\u002B1RPje290DZAGgJCJzeeBrGOTHFDyLxly21MwQVvjayAMy\u002BuB8\u002B99qvQuNmlNgJ46P5ehKnNhK2CXH6tB/MM02ILKXK6QkHSnQR4JuK/V1Fb1FRg8PewLZieSVGCfIQBmt6D6MQFYf3mEHtAvxvFhxCEK8ehYl80rXExkWnnFKr\u002BGYgJ\u002BDjs="}--><!--Blazor:{"prerenderId":"956b92e99df041bc8254f21c3b652ce9"}-->
+</head>
+<body>
+    <!--Blazor:{"type":"server","prerenderId":"8c5a929e6ade49519fae40885956e73a","key":{"locationHash":"10D2218C73728A3E4932ECB6199C3789F88BA12463AC3758B82AA570DB11D363:0","formattedComponentKey":""},"sequence":1,"descriptor":"CfDJ8FuBSuG7Kh1Ijiwzr3NdtL3mpEB7WfNJDVT5wpgUtABJKo8LAbAvJXNa9SNAy2HhiLvev1Y\u002BRMa9t61/0GPS3yfhmi83IGXsjNqoAYhxuJqJuuFLG0od0CcaFiLPlhHYUvmh0wvgyoPg8unzbvFl8/B4e3JkgL/xVsmYi1ogvpgfECCSFeqkqF4fa7CyPG8/V8wUcY7yaYBzAx0ovIce0mltR0cR8zzD8aOL0Ek0MTsVBkNSzTS5DbX9aWv6635ljyEn1Ju\u002BAM8WRiuzNyyF0UeTrI80lfjk77ePmo57eRawcrGdNerIQ4eEt50Nzq3XAVolAFormr92SbjnZQyqZ7oFnVuRnxo1b63t1k/Yr2qnF7LLx055BSmHGobi35p2SF60q6AoosoWqhp7GfHOZ7iB/09\u002Bw/lcxC0yXNiJuaAJwtjWRG8KfdmE79bu//rFBxdu/rsPtPd\u002BX8Lt8vNQRyJ9DVk1Li8CJKVX31svBbzrvXibHigBQUT5bsF\u002BaFMJAA=="}--><style>
+::-webkit-scrollbar {width: 8px;height: 8px;z-index: 1;}
+::-webkit-scrollbar-track {background: transparent;}
+::-webkit-scrollbar-thumb {background: #c4c4c4;border-radius: 1px;}
+::-webkit-scrollbar-thumb:hover {background: #a6a6a6;}
+html, body * {scrollbar-color: #c4c4c4 transparent;scrollbar-width: thin;}
+</style>
+<style>
+    .mud-chart-serie:hover {
+        filter: url(#lighten);
+    }
+</style>
+
+<style>
+:root{
+--mud-palette-black: rgba(39,44,52,1);
+--mud-palette-white: rgba(255,255,255,1);
+--mud-palette-primary: rgba(89,74,226,1);
+--mud-palette-primary-rgb: 89,74,226;
+--mud-palette-primary-text: rgba(255,255,255,1);
+--mud-palette-primary-darken: rgb(62,44,221);
+--mud-palette-primary-lighten: rgb(118,106,231);
+--mud-palette-primary-hover: rgba(89,74,226,0.058823529411764705);
+--mud-palette-secondary: rgba(255,64,129,1);
+--mud-palette-secondary-rgb: 255,64,129;
+--mud-palette-secondary-text: rgba(255,255,255,1);
+--mud-palette-secondary-darken: rgb(255,31,105);
+--mud-palette-secondary-lighten: rgb(255,102,153);
+--mud-palette-secondary-hover: rgba(255,64,129,0.058823529411764705);
+--mud-palette-tertiary: rgba(30,200,165,1);
+--mud-palette-tertiary-rgb: 30,200,165;
+--mud-palette-tertiary-text: rgba(255,255,255,1);
+--mud-palette-tertiary-darken: rgb(25,169,140);
+--mud-palette-tertiary-lighten: rgb(42,223,187);
+--mud-palette-tertiary-hover: rgba(30,200,165,0.058823529411764705);
+--mud-palette-info: rgba(33,150,243,1);
+--mud-palette-info-rgb: 33,150,243;
+--mud-palette-info-text: rgba(255,255,255,1);
+--mud-palette-info-darken: rgb(12,128,223);
+--mud-palette-info-lighten: rgb(71,167,245);
+--mud-palette-info-hover: rgba(33,150,243,0.058823529411764705);
+--mud-palette-success: rgba(0,200,83,1);
+--mud-palette-success-rgb: 0,200,83;
+--mud-palette-success-text: rgba(255,255,255,1);
+--mud-palette-success-darken: rgb(0,163,68);
+--mud-palette-success-lighten: rgb(0,235,98);
+--mud-palette-success-hover: rgba(0,200,83,0.058823529411764705);
+--mud-palette-warning: rgba(255,152,0,1);
+--mud-palette-warning-rgb: 255,152,0;
+--mud-palette-warning-text: rgba(255,255,255,1);
+--mud-palette-warning-darken: rgb(214,129,0);
+--mud-palette-warning-lighten: rgb(255,167,36);
+--mud-palette-warning-hover: rgba(255,152,0,0.058823529411764705);
+--mud-palette-error: rgba(244,67,54,1);
+--mud-palette-error-rgb: 244,67,54;
+--mud-palette-error-text: rgba(255,255,255,1);
+--mud-palette-error-darken: rgb(242,28,13);
+--mud-palette-error-lighten: rgb(246,96,85);
+--mud-palette-error-hover: rgba(244,67,54,0.058823529411764705);
+--mud-palette-dark: rgba(66,66,66,1);
+--mud-palette-dark-rgb: 66,66,66;
+--mud-palette-dark-text: rgba(255,255,255,1);
+--mud-palette-dark-darken: rgb(46,46,46);
+--mud-palette-dark-lighten: rgb(87,87,87);
+--mud-palette-dark-hover: rgba(66,66,66,0.058823529411764705);
+--mud-palette-text-primary: rgba(66,66,66,1);
+--mud-palette-text-secondary: rgba(0,0,0,0.5372549019607843);
+--mud-palette-text-disabled: rgba(0,0,0,0.3764705882352941);
+--mud-palette-action-default: rgba(0,0,0,0.5372549019607843);
+--mud-palette-action-default-hover: rgba(0,0,0,0.058823529411764705);
+--mud-palette-action-disabled: rgba(0,0,0,0.25882352941176473);
+--mud-palette-action-disabled-background: rgba(0,0,0,0.11764705882352941);
+--mud-palette-surface: rgba(255,255,255,1);
+--mud-palette-background: rgba(255,255,255,1);
+--mud-palette-background-gray: rgba(245,245,245,1);
+--mud-palette-drawer-background: rgba(255,255,255,1);
+--mud-palette-drawer-text: rgba(66,66,66,1);
+--mud-palette-drawer-icon: rgba(97,97,97,1);
+--mud-palette-appbar-background: rgba(89,74,226,1);
+--mud-palette-appbar-text: rgba(255,255,255,1);
+--mud-palette-lines-default: rgba(0,0,0,0.11764705882352941);
+--mud-palette-lines-inputs: rgba(189,189,189,1);
+--mud-palette-table-lines: rgba(224,224,224,1);
+--mud-palette-table-striped: rgba(0,0,0,0.0196078431372549);
+--mud-palette-table-hover: rgba(0,0,0,0.0392156862745098);
+--mud-palette-divider: rgba(224,224,224,1);
+--mud-palette-divider-light: rgba(0,0,0,0.8);
+--mud-palette-skeleton: rgba(0,0,0,0.10980392156862745);
+--mud-palette-gray-default: #9E9E9E;
+--mud-palette-gray-light: #BDBDBD;
+--mud-palette-gray-lighter: #E0E0E0;
+--mud-palette-gray-dark: #757575;
+--mud-palette-gray-darker: #616161;
+--mud-palette-overlay-dark: rgba(33,33,33,0.4980392156862745);
+--mud-palette-overlay-light: rgba(255,255,255,0.4980392156862745);
+--mud-ripple-color: var(--mud-palette-text-primary);
+--mud-ripple-opacity: 0.1;
+--mud-ripple-opacity-secondary: 0.2;
+--mud-elevation-0: none;
+--mud-elevation-1: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12);
+--mud-elevation-2: 0px 3px 1px -2px rgba(0,0,0,0.2),0px 2px 2px 0px rgba(0,0,0,0.14),0px 1px 5px 0px rgba(0,0,0,0.12);
+--mud-elevation-3: 0px 3px 3px -2px rgba(0,0,0,0.2),0px 3px 4px 0px rgba(0,0,0,0.14),0px 1px 8px 0px rgba(0,0,0,0.12);
+--mud-elevation-4: 0px 2px 4px -1px rgba(0,0,0,0.2),0px 4px 5px 0px rgba(0,0,0,0.14),0px 1px 10px 0px rgba(0,0,0,0.12);
+--mud-elevation-5: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 5px 8px 0px rgba(0,0,0,0.14),0px 1px 14px 0px rgba(0,0,0,0.12);
+--mud-elevation-6: 0px 3px 5px -1px rgba(0,0,0,0.2),0px 6px 10px 0px rgba(0,0,0,0.14),0px 1px 18px 0px rgba(0,0,0,0.12);
+--mud-elevation-7: 0px 4px 5px -2px rgba(0,0,0,0.2),0px 7px 10px 1px rgba(0,0,0,0.14),0px 2px 16px 1px rgba(0,0,0,0.12);
+--mud-elevation-8: 0px 5px 5px -3px rgba(0,0,0,0.2),0px 8px 10px 1px rgba(0,0,0,0.14),0px 3px 14px 2px rgba(0,0,0,0.12);
+--mud-elevation-9: 0px 5px 6px -3px rgba(0,0,0,0.2),0px 9px 12px 1px rgba(0,0,0,0.14),0px 3px 16px 2px rgba(0,0,0,0.12);
+--mud-elevation-10: 0px 6px 6px -3px rgba(0,0,0,0.2),0px 10px 14px 1px rgba(0,0,0,0.14),0px 4px 18px 3px rgba(0,0,0,0.12);
+--mud-elevation-11: 0px 6px 7px -4px rgba(0,0,0,0.2),0px 11px 15px 1px rgba(0,0,0,0.14),0px 4px 20px 3px rgba(0,0,0,0.12);
+--mud-elevation-12: 0px 7px 8px -4px rgba(0,0,0,0.2),0px 12px 17px 2px rgba(0,0,0,0.14),0px 5px 22px 4px rgba(0,0,0,0.12);
+--mud-elevation-13: 0px 7px 8px -4px rgba(0,0,0,0.2),0px 13px 19px 2px rgba(0,0,0,0.14),0px 5px 24px 4px rgba(0,0,0,0.12);
+--mud-elevation-14: 0px 7px 9px -4px rgba(0,0,0,0.2),0px 14px 21px 2px rgba(0,0,0,0.14),0px 5px 26px 4px rgba(0,0,0,0.12);
+--mud-elevation-15: 0px 8px 9px -5px rgba(0,0,0,0.2),0px 15px 22px 2px rgba(0,0,0,0.14),0px 6px 28px 5px rgba(0,0,0,0.12);
+--mud-elevation-16: 0px 8px 10px -5px rgba(0,0,0,0.2),0px 16px 24px 2px rgba(0,0,0,0.14),0px 6px 30px 5px rgba(0,0,0,0.12);
+--mud-elevation-17: 0px 8px 11px -5px rgba(0,0,0,0.2),0px 17px 26px 2px rgba(0,0,0,0.14),0px 6px 32px 5px rgba(0,0,0,0.12);
+--mud-elevation-18: 0px 9px 11px -5px rgba(0,0,0,0.2),0px 18px 28px 2px rgba(0,0,0,0.14),0px 7px 34px 6px rgba(0,0,0,0.12);
+--mud-elevation-19: 0px 9px 12px -6px rgba(0,0,0,0.2),0px 19px 29px 2px rgba(0,0,0,0.14),0px 7px 36px 6px rgba(0,0,0,0.12);
+--mud-elevation-20: 0px 10px 13px -6px rgba(0,0,0,0.2),0px 20px 31px 3px rgba(0,0,0,0.14),0px 8px 38px 7px rgba(0,0,0,0.12);
+--mud-elevation-21: 0px 10px 13px -6px rgba(0,0,0,0.2),0px 21px 33px 3px rgba(0,0,0,0.14),0px 8px 40px 7px rgba(0,0,0,0.12);
+--mud-elevation-22: 0px 10px 14px -6px rgba(0,0,0,0.2),0px 22px 35px 3px rgba(0,0,0,0.14),0px 8px 42px 7px rgba(0,0,0,0.12);
+--mud-elevation-23: 0px 11px 14px -7px rgba(0,0,0,0.2),0px 23px 36px 3px rgba(0,0,0,0.14),0px 9px 44px 8px rgba(0,0,0,0.12);
+--mud-elevation-24: 0px 11px 15px -7px rgba(0,0,0,0.2),0px 24px 38px 3px rgba(0,0,0,0.14),0px 9px 46px 8px rgba(0,0,0,0.12);
+--mud-elevation-25: 0 5px 5px -3px rgba(0,0,0,.06), 0 8px 10px 1px rgba(0,0,0,.042), 0 3px 14px 2px rgba(0,0,0,.036);
+--mud-default-borderradius: 4px;
+--mud-drawer-width-left: 240px;
+--mud-drawer-width-right: 240px;
+--mud-drawer-width-mini-left: 56px;
+--mud-drawer-width-mini-right: 56px;
+--mud-appbar-height: 64px;
+--mud-typography-default-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-default-size: .875rem;
+--mud-typography-default-weight: 400;
+--mud-typography-default-lineheight: 1.43;
+--mud-typography-default-letterspacing: .01071em;
+--mud-typography-default-text-transform: none;
+--mud-typography-h1-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-h1-size: 6rem;
+--mud-typography-h1-weight: 300;
+--mud-typography-h1-lineheight: 1.167;
+--mud-typography-h1-letterspacing: -.01562em;
+--mud-typography-h1-text-transform: none;
+--mud-typography-h2-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-h2-size: 3.75rem;
+--mud-typography-h2-weight: 300;
+--mud-typography-h2-lineheight: 1.2;
+--mud-typography-h2-letterspacing: -.00833em;
+--mud-typography-h2-text-transform: none;
+--mud-typography-h3-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-h3-size: 3rem;
+--mud-typography-h3-weight: 400;
+--mud-typography-h3-lineheight: 1.167;
+--mud-typography-h3-letterspacing: 0;
+--mud-typography-h3-text-transform: none;
+--mud-typography-h4-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-h4-size: 2.125rem;
+--mud-typography-h4-weight: 400;
+--mud-typography-h4-lineheight: 1.235;
+--mud-typography-h4-letterspacing: .00735em;
+--mud-typography-h4-text-transform: none;
+--mud-typography-h5-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-h5-size: 1.5rem;
+--mud-typography-h5-weight: 400;
+--mud-typography-h5-lineheight: 1.334;
+--mud-typography-h5-letterspacing: 0;
+--mud-typography-h5-text-transform: none;
+--mud-typography-h6-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-h6-size: 1.25rem;
+--mud-typography-h6-weight: 500;
+--mud-typography-h6-lineheight: 1.6;
+--mud-typography-h6-letterspacing: .0075em;
+--mud-typography-h6-text-transform: none;
+--mud-typography-subtitle1-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-subtitle1-size: 1rem;
+--mud-typography-subtitle1-weight: 400;
+--mud-typography-subtitle1-lineheight: 1.75;
+--mud-typography-subtitle1-letterspacing: .00938em;
+--mud-typography-subtitle1-text-transform: none;
+--mud-typography-subtitle2-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-subtitle2-size: .875rem;
+--mud-typography-subtitle2-weight: 500;
+--mud-typography-subtitle2-lineheight: 1.57;
+--mud-typography-subtitle2-letterspacing: .00714em;
+--mud-typography-subtitle2-text-transform: none;
+--mud-typography-body1-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-body1-size: 1rem;
+--mud-typography-body1-weight: 400;
+--mud-typography-body1-lineheight: 1.5;
+--mud-typography-body1-letterspacing: .00938em;
+--mud-typography-body1-text-transform: none;
+--mud-typography-body2-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-body2-size: .875rem;
+--mud-typography-body2-weight: 400;
+--mud-typography-body2-lineheight: 1.43;
+--mud-typography-body2-letterspacing: .01071em;
+--mud-typography-body2-text-transform: none;
+--mud-typography-input-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-input-size: 1rem;
+--mud-typography-input-weight: 400;
+--mud-typography-input-lineheight: 1.1876;
+--mud-typography-input-letterspacing: .00938em;
+--mud-typography-input-text-transform: none;
+--mud-typography-button-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-button-size: .875rem;
+--mud-typography-button-weight: 500;
+--mud-typography-button-lineheight: 1.75;
+--mud-typography-button-letterspacing: .02857em;
+--mud-typography-button-text-transform: uppercase;
+--mud-typography-caption-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-caption-size: .75rem;
+--mud-typography-caption-weight: 400;
+--mud-typography-caption-lineheight: 1.66;
+--mud-typography-caption-letterspacing: .03333em;
+--mud-typography-caption-text-transform: none;
+--mud-typography-overline-family: 'Roboto','Helvetica','Arial','sans-serif';
+--mud-typography-overline-size: .75rem;
+--mud-typography-overline-weight: 400;
+--mud-typography-overline-lineheight: 2.66;
+--mud-typography-overline-letterspacing: .08333em;
+--mud-typography-overline-text-transform: none;
+--mud-zindex-drawer: 1100;
+--mud-zindex-appbar: 1300;
+--mud-zindex-dialog: 1400;
+--mud-zindex-popover: 1200;
+--mud-zindex-snackbar: 1500;
+--mud-zindex-tooltip: 1600;
+--mud-native-html-color-scheme: light;
+}
+</style>
+
+<div class="mud-popover-provider"></div>
+
+<div id="mud-snackbar-container" class="mud-snackbar-location-top-right"></div>
+
+<div class="mud-layout" style=""><div class="mud-main-content"><div class="d-flex align-center justify-center min-vh-100 bg-slate-100 px-4 py-12" style="min-height: 100vh; background-color: #f1f5f9;"><div class="mud-container mud-container-maxwidth-xs mud-container--gutters pa-6"><div class="mud-paper mud-elevation-5 mud-card rounded-xl border border-slate-200 pa-6" style="border-radius: 1rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);;"><div class="text-center mb-6"><div class="d-flex justify-center mb-3"><div class="d-flex align-center justify-center rounded-xl" style="width: 56px; height: 56px; background-color: #1e1b4b; border: 2px solid #818cf8; border-radius: 0.75rem;"><span style="color: white; font-weight: 900; font-size: 1.75rem; font-family: Georgia, serif; font-style: italic;">N</span></div></div>
+                <h2 class="text-h5 font-weight-bold" style="color: #0f172a;">Ingreso a <span style="font-family: Georgia, serif; font-style: italic; color: #1e1b4b;">Noties</span></h2>
+                <span class="d-block mt-1 font-mono uppercase text-caption" style="color: #64748b; letter-spacing: 0.1em; font-weight: 600;">Escuela Intermedia • Módulo de Gestión</span></div>
+
+            <form class="mud-form gap-0 mt-6" action="/"><button type="submit" disabled style="display: none" aria-hidden="true"></button><div class="mb-4"><label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #94a3b8; font-size: 0.7rem; letter-spacing: 0.05em;">CORREO ELECTRÓNICO</label>
+                    <div class="mud-input-control mud-input-required mud-input-control-margin-dense mud-input-input-control bg-slate-50 rounded-xl"><div class="mud-input-control-input-container"><div class="mud-input mud-input-outlined mud-input-adorned-start mud-input-margin-dense mud-shrink mud-ltr mud-typography-input"><div class="mud-input-adornment mud-input-adornment-start"><svg class="mud-icon-root mud-icon-default mud-svg-icon mud-icon-size-medium mud-input-adornment-icon" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="img" tabindex="-1"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></div><input class="mud-input-slot mud-input-root mud-input-root-outlined mud-input-root-adorned-start mud-input-root-margin-dense" id="mudinpute63mnm4w" type="email" value="" placeholder="ejemplo@noties.com" inputmode="text" maxlength="524288" aria-invalid="false" required aria-required="true" /><div class="mud-input-slot mud-input-root mud-input-root-outlined mud-input-root-adorned-start mud-input-root-margin-dense" style="display:none" tabindex="-1"></div><div class="mud-input-outlined-border"></div></div></div></div></div>
+
+                <div class="mb-6"><label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #94a3b8; font-size: 0.7rem; letter-spacing: 0.05em;">CONTRASEÑA</label>
+                    <div class="mud-input-control mud-input-required mud-input-control-margin-dense mud-input-input-control bg-slate-50 rounded-xl"><div class="mud-input-control-input-container"><div class="mud-input mud-input-outlined mud-input-adorned-start mud-input-margin-dense mud-shrink mud-typography-input"><div class="mud-input-adornment mud-input-adornment-start"><button tabindex="-1" type="button" class="mud-button-root mud-icon-button mud-ripple mud-ripple-icon mud-icon-button-edge-start mud-input-adornment-icon-button" __internal_stopPropagation_onclick><span class="mud-icon-button-label"><svg class="mud-icon-root mud-svg-icon mud-icon-size-medium" focusable="false" viewBox="0 0 24 24" aria-hidden="true" role="img"><path d="M0 0h24v24H0z" fill="none"/><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg></span></button></div><input class="mud-input-slot mud-input-root mud-input-root-outlined mud-input-root-adorned-start mud-input-root-margin-dense" id="mudinput04lk8rol" type="password" value="" placeholder="&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;" inputmode="text" maxlength="524288" aria-invalid="false" required aria-required="true" /><div class="mud-input-slot mud-input-root mud-input-root-outlined mud-input-root-adorned-start mud-input-root-margin-dense" style="display:none" tabindex="-1"></div><div class="mud-input-outlined-border"></div></div></div></div></div>
+
+                <button type="button" class="mud-button-root mud-button mud-button-filled mud-button-filled-dark mud-button-filled-size-medium mud-width-full mud-ripple py-3 rounded-xl hover:bg-slate-800" style="background-color: #1e1b4b; border-radius: 0.75rem; text-transform: none; font-weight: bold; box-shadow: 0 4px 6px -1px rgba(30, 27, 75, 0.2);" __internal_stopPropagation_onclick><span class="mud-button-label"><span>Iniciar Sesión</span></span></button></form>
+
+            <div class="mt-6 pt-6 border-t border-slate-100" style="border-top: 1px solid #f1f5f9;"><p class="text-center font-weight-bold uppercase mb-3" style="color: #94a3b8; font-size: 0.65rem; letter-spacing: 0.05em;">CREDENCIALES DE PRUEBA (CLIC P/RELLENAR)</p>
+                
+                <div class="d-flex flex-column gap-2"><div class="mud-paper mud-paper-outlined pa-3 rounded-xl hover:bg-slate-50 cursor-pointer text-left" style="border-radius: 0.75rem; border: 1px solid #e2e8f0; cursor: pointer; background: #fafafa;;"><div class="font-weight-bold text-xs" style="color: #1e293b; font-size: 0.75rem;">Admin</div>
+                        <div class="font-mono text-[10px]" style="color: #64748b; font-size: 0.65rem;">rsaparicio.21@est.ucab.edu.ve</div>
+                        <div class="text-[9px]" style="color: #94a3b8; font-size: 0.6rem; font-weight: 600;">Clave: 1234..</div></div>
+
+                    <div class="mud-paper mud-paper-outlined pa-3 rounded-xl hover:bg-slate-50 cursor-pointer text-left" style="border-radius: 0.75rem; border: 1px solid #e2e8f0; cursor: pointer; background: #fafafa;;"><div class="font-weight-bold text-xs" style="color: #1e293b; font-size: 0.75rem;">Docente</div>
+                        <div class="font-mono text-[10px]" style="color: #64748b; font-size: 0.65rem;">daaponte.25@est.ucab.edu.ve</div>
+                        <div class="text-[9px]" style="color: #94a3b8; font-size: 0.6rem; font-weight: 600;">Clave: daaponte.25</div></div>
+
+                    <div class="mud-paper mud-paper-outlined pa-3 rounded-xl hover:bg-slate-50 cursor-pointer text-left" style="border-radius: 0.75rem; border: 1px solid #e2e8f0; cursor: pointer; background: #fafafa;;"><div class="font-weight-bold text-xs" style="color: #1e293b; font-size: 0.75rem;">Representante</div>
+                        <div class="font-mono text-[10px]" style="color: #64748b; font-size: 0.65rem;">cacarrero.19@est.ucab.edu.ve</div>
+                        <div class="text-[9px]" style="color: #94a3b8; font-size: 0.6rem; font-weight: 600;">Clave: cacarrero.19</div></div></div></div></div></div></div></div></div>
+            <!--Blazor:{"prerenderId":"8c5a929e6ade49519fae40885956e73a"}-->
+
+    <div id="blazor-error-ui">
+        
+        
+            Ha ocurrido una excepción no manejada. Revisa las herramientas de desarrollo del navegador para más detalles.
+        
+        <a href="" class="reload">Recargar</a>
+        <a class="dismiss">🗙</a>
+    </div>
+
+    <!-- MudBlazor JS -->
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    
+    <!-- Blazor Server Integration JS -->
+    <script src="_framework/blazor.server.js"></script>
+</body>
+</html>

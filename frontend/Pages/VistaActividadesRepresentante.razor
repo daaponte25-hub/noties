@@ -1,0 +1,88 @@
+@using noties.Models
+@using NotiesBlazor.Controllers
+@inject ActividadController ActividadCtrl
+
+<MudText Typo="Typo.h4" Color="Color.Primary" GutterBottom="true">Boleta de Calificaciones: @Materia.Nombre</MudText>
+<MudText Typo="Typo.subtitle1" Class="text-muted mb-4">Planificación y Rendimiento del Estudiante</MudText>
+
+@if (listaActividades == null || !listaActividades.Any())
+{
+    <MudAlert Severity="Severity.Info" Class="rounded-lg">No hay actividades publicadas para esta materia.</MudAlert>
+}
+else
+{
+    <MudSimpleTable Style="overflow-x: auto;" Class="rounded-xl" Elevation="1">
+        <thead>
+            <tr>
+                <th>Evaluación</th>
+                <th>Descripción</th>
+                <th>Ponderación</th>
+                <th>Calificación (0-20)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var actividad in listaActividades)
+            {
+                double notaEstudiante = ObtenerNotaDeString(actividad.NotasPorAlumno, CurrentUser.Id);
+
+                <tr>
+                    <td><b>@(actividad.Nombre ?? "Sin nombre")</b></td>
+                    <td>@(actividad.Descripcion ?? "Sin descripción")</td>
+                    <td>@actividad.Porcentaje%</td>
+                    <td>
+                        <MudChip T="string" 
+                                 Color="@(notaEstudiante >= 10 ? Color.Success : Color.Error)" 
+                                 Size="Size.Small" 
+                                 Variant="Variant.Filled"
+                                 Style="font-weight: bold; min-width: 60px; text-align: center;">
+                            @notaEstudiante.ToString("0.#") / 20
+                        </MudChip>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
+
+@code {
+    [Parameter] public int MateriaId { get; set; }
+    [Parameter] public NotiesBlazor.Controllers.MateriasController.Materia Materia { get; set; } = default!;
+    [Parameter] public NotiesBlazor.Models.User CurrentUser { get; set; } = default!;
+
+    private List<Actividad> listaActividades = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var actividades = await ActividadCtrl.GetActividadesByMateriaAsync(MateriaId);
+        listaActividades = actividades ?? new List<Actividad>();
+    }
+
+    private double ObtenerNotaDeString(string notasPorAlumno, string usuarioId)
+    {
+        if (string.IsNullOrWhiteSpace(notasPorAlumno)) 
+            return 0.0; 
+
+        try
+        {
+            var registros = notasPorAlumno.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach (var reg in registros)
+            {
+                var partes = reg.Split(':');
+                if (partes.Length == 2 && partes[0] == usuarioId)
+                {
+                    if (double.TryParse(partes[1], out double nota))
+                    {
+                        return nota; 
+                    }
+                }
+            }
+        }
+        catch
+        {
+            return 0.0;
+        }
+
+        return 0.0; 
+    }
+}

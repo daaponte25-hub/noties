@@ -1,0 +1,126 @@
+@using noties.Models
+@using NotiesBlazor.Controllers
+@using System.Globalization @* 🌟 Esencial para no romper el string con comas decimales *@
+@inject ActividadController ActividadCtrl
+@inject UserController UserCtrl
+@inject ISnackbar Snackbar
+
+<MudDialog Style="border-radius: 1rem; max-width: 500px;">
+    <TitleContent>
+        <MudText Typo="Typo.h6"><b>Planilla de Notas:</b> @ActividadActual.Nombre</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (listaEstudiantes == null)
+        {
+            <div class="d-flex justify-center my-4">
+                <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+            </div>
+        }
+        else if (!listaEstudiantes.Any())
+        {
+            <MudAlert Severity="Severity.Warning" Class="rounded-lg">No hay estudiantes activos registrados en el sistema.</MudAlert>
+        }
+        else
+        {
+            <div style="max-height: 400px; overflow-y: auto;" class="pa-1">
+                <MudSimpleTable Dense="true" Elevation="0" Hover="true">
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th style="width: 140px;">Nota (0-20)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var estudiante in listaEstudiantes)
+                        {
+                            var estId = estudiante.Id;
+                            <tr>
+                                <td>@estudiante.FullName</td>
+                                <td>
+                                    @* 🌟 Forzamos T="double" y permitimos modificadores visuales limpios *@
+                                    <MudNumericField T="double" 
+                                                     @bind-Value="notasTemporales[estId]" 
+                                                     Min="0.0" Max="20.0" Step="0.5"
+                                                     Variant="Variant.Outlined" 
+                                                     Margin="Margin.Dense"
+                                                     HideSpinner="false" />
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </MudSimpleTable>
+            </div>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancelar" Class="px-4">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarNotas" Class="px-4">Guardar Notas</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public Actividad ActividadActual { get; set; } = default!;
+    [Parameter] public int MateriaId { get; set; }
+
+    private List<User> listaEstudiantes = new();
+    private Dictionary<string, double> notasTemporales = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var usuarios = await UserCtrl.GetUsersAsync();
+            listaEstudiantes = usuarios?
+                .Where(u => u.Status == UserStatus.Activo && u.Role != UserRole.Administrador && u.Role != UserRole.Docente)
+                .OrderBy(u => u.FullName)
+                .ToList() ?? new();
+
+            foreach (var est in listaEstudiantes) 
+            {
+                notasTemporales[est.Id] = 0.0;
+            }
+
+            if (!string.IsNullOrWhiteSpace(ActividadActual.NotasPorAlumno))
+            {
+                var registros = ActividadActual.NotasPorAlumno.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                foreach (var reg in registros)
+                {
+                    var partes = reg.Split(':');
+                    if (partes.Length == 2 && 
+                        double.TryParse(partes[1], CultureInfo.InvariantCulture, out double nota))
+                    {
+                        var idKey = partes[0];
+                        if (notasTemporales.ContainsKey(idKey)) 
+                        {
+                            notasTemporales[idKey] = nota;
+                        }
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al inicializar la planilla: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task GuardarNotas()
+    {
+        try
+        {
+            var lineas = notasTemporales.Select(kvp => $"{kvp.Key}:{kvp.Value.ToString("0.#", CultureInfo.InvariantCulture)}");
+            ActividadActual.NotasPorAlumno = string.Join(",", lineas);
+
+            await ActividadCtrl.UpdateActividadAsync(ActividadActual.Id, ActividadActual);
+            Snackbar.Add("Notas guardadas exitosamente.", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al guardar las calificaciones: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void Cancelar() => MudDialog.Cancel();
+}

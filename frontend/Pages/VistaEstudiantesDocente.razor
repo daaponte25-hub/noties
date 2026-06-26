@@ -1,0 +1,116 @@
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@inject EstudianteController EstudianteCtrl
+@inject MateriasController MateriasCtrl
+@inject UserController UserCtrl
+
+<div class="mb-6">
+    <MudText Typo="Typo.h4" Color="Color.Primary" Style="font-weight: 700;">Estudiantes</MudText>
+    <MudText Typo="Typo.subtitle1" Class="text-muted">Mis alumnos asignados por materia.</MudText>
+</div>
+
+@if (gruposPorMateria == null || !gruposPorMateria.Any())
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="rounded-lg">
+        No tiene estudiantes inscritos en sus materias asignadas.
+    </MudAlert>
+}
+else
+{
+    <MudText Typo="Typo.h6" Class="mb-3 text-secondary">Mis Materias</MudText>
+    <MudExpansionPanels MultiLine="true" Class="rounded-lg">
+        @foreach (var grupo in gruposPorMateria)
+        {
+            <MudExpansionPanel Text="@($"{grupo.Materia.Nombre} ({grupo.Estudiantes.Count} Alumnos)")" Class="py-1">
+                <MudTable Items="grupo.Estudiantes" Dense="true" Hover="true" Elevation="0">
+                    <HeaderContent>
+                        <MudTh>Nombre</MudTh>
+                        <MudTh>Representante</MudTh>
+                        <MudTh>Otras Materias</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd>@context.FullName</MudTd>
+                        <MudTd>@GetRepresentanteName(context.RepresentanteId)</MudTd>
+                        <MudTd>
+                            @if (context.MateriaIds == null || !context.MateriaIds.Any())
+                            {
+                                <span class="text-muted">Sin materias</span>
+                            }
+                            else
+                            {
+                                @foreach (var mid in context.MateriaIds)
+                                {
+                                    var m = materiasLookup.GetValueOrDefault(mid);
+                                    <MudChip T="string" 
+                                             Class="mr-1" 
+                                             Color="@(mid == grupo.Materia.Id ? Color.Primary : Color.Default)"
+                                             Variant="@(mid == grupo.Materia.Id ? Variant.Filled : Variant.Text)">
+                                        @(m?.Nombre ?? "Materia desconocida")
+                                    </MudChip>
+                                }
+                            }
+                        </MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudExpansionPanel>
+        }
+    </MudExpansionPanels>
+}
+
+@code {
+    [Parameter] 
+    public NotiesBlazor.Models.User CurrentUser { get; set; } = default!;
+
+    private Dictionary<int, NotiesBlazor.Controllers.MateriasController.Materia?> materiasLookup = new();
+    private List<MateriaGroup> gruposPorMateria = new();
+    private List<NotiesBlazor.Models.User> todosLosUsuarios = new();
+
+    private class MateriaGroup
+    {
+        public NotiesBlazor.Controllers.MateriasController.Materia Materia { get; set; } = default!;
+        public List<noties.Models.Estudiante> Estudiantes { get; set; } = new();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        todosLosUsuarios = await UserCtrl.GetUsersAsync();
+        await CargarDatosDocente();
+    }
+
+    private async Task CargarDatosDocente()
+    {
+        var estudiantes = await EstudianteCtrl.GetEstudiantesAsync();
+        var materias = await MateriasCtrl.GetMateriasAsync();
+        
+        // Mapeo general para resolver nombres de materias rápido
+        materiasLookup = materias.ToDictionary(m => m.Id, m => (NotiesBlazor.Controllers.MateriasController.Materia?)m);
+
+        // Filtrar solo las materias que dicta este docente
+        var materiasDelDocente = materias
+            .Where(m => !string.IsNullOrWhiteSpace(CurrentUser?.FullName) && 
+                        m.Profesor.Equals(CurrentUser!.FullName, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        var materiaIdsDocente = materiasDelDocente.Select(m => m.Id).ToHashSet();
+
+        // Filtrar estudiantes que pertenezcan a al menos una materia del docente
+        var estudiantesAsignados = estudiantes
+            .Where(e => e.MateriaIds.Any(mid => materiaIdsDocente.Contains(mid)))
+            .ToList();
+
+        gruposPorMateria = materiasDelDocente
+            .Select(m => new MateriaGroup
+            {
+                Materia = m,
+                Estudiantes = estudiantesAsignados.Where(e => e.MateriaIds.Contains(m.Id)).ToList()
+            })
+            .Where(g => g.Estudiantes.Any()) 
+            .ToList();
+    }
+
+    private string GetRepresentanteName(string repId)
+    {
+        var user = todosLosUsuarios.FirstOrDefault(u => u.Id == repId);
+        return user?.FullName ?? "-";
+    }
+}

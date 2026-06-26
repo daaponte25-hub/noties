@@ -1,0 +1,66 @@
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@using static NotiesBlazor.Controllers.MateriasController
+@inject MateriasController MateriasCtrl
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<div class="mb-6">
+    <MudText Typo="Typo.h4" Color="Color.Primary" Style="font-weight: 700;">Mis Materias Asignadas</MudText>
+    <MudText Typo="Typo.subtitle1" Class="text-muted">Seleccione una cátedra para planificar evaluaciones y registrar calificaciones.</MudText>
+</div>
+
+@if (materias == null || !materias.Any())
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled" Class="rounded-lg">
+        Usted no tiene materias asignadas actualmente.
+    </MudAlert>
+}
+else
+{
+    <MudGrid>
+        @foreach (var materia in materias)
+        {
+            <MudItem xs="12" sm="6" md="4">
+                <MudCard Elevation="3" Class="rounded-xl hover-card py-2" Style="border-top: 5px solid var(--mud-palette-primary); height: 100%;">
+                    <MudCardHeader>
+                        <CardHeaderContent>
+                            <MudText Typo="Typo.h6" Style="font-weight: 600;">@(materia.Nombre ?? "Materia sin nombre")</MudText>
+                            <div class="d-flex align-center mt-1 text-muted">
+                                <MudIcon Icon="@Icons.Material.Filled.CheckCircle" Size="Size.Small" Color="Color.Success" Class="mr-1"/>
+                                <MudText Typo="Typo.body2">Cátedra Activa</MudText>
+                            </div>
+                        </CardHeaderContent>
+                    </MudCardHeader>
+                    <MudCardActions Class="justify-end px-4">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="rounded-pill" OnClick="@(() => IrAActividades(materia.Id))">
+                            Ver Actividades
+                        </MudButton>
+                    </MudCardActions>
+                </MudCard>
+            </MudItem>
+        }
+    </MudGrid>
+}
+
+@code {
+    [Parameter] public User CurrentUser { get; set; } = default!;
+    private List<Materia> materias = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var todas = await MateriasCtrl.GetMateriasAsync() ?? new List<Materia>();
+            materias = todas
+                .Where(m => !string.IsNullOrEmpty(m.Profesor) && m.Profesor.Equals(CurrentUser.FullName, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al cargar sus cátedras: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void IrAActividades(int id) => Navigation.NavigateTo($"/materias/{id}/actividades");
+}

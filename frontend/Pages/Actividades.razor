@@ -1,0 +1,87 @@
+@page "/materias/{MateriaId:int}/actividades"
+@attribute [Authorize(Roles = "Administrador, Docente, Representante")]
+@using noties.Models
+@using NotiesBlazor.Models
+@using NotiesBlazor.Controllers
+@inject MateriasController MateriasCtrl
+@inject EstudianteController EstudianteCtrl
+@inject UserController UserCtrl
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+@if (isLoading)
+{
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    </div>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+        @if (currentUser?.Role == UserRole.Representante)
+        {
+            <VistaActividadesRepresentante MateriaId="MateriaId" Materia="materiaActual" CurrentUser="currentUser" />
+        }
+        else
+        {
+            <VistaActividadesGestion MateriaId="MateriaId" Materia="materiaActual" />
+        }
+    </MudContainer>
+}
+
+@code {
+    [Parameter] public int MateriaId { get; set; }
+    
+    private MateriasController.Materia? materiaActual; 
+    private User? currentUser;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        isLoading = true;
+        currentUser = UserCtrl.SessionUser;
+
+        if (currentUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        if (currentUser.Role == UserRole.Representante)
+        {
+            var estudiantes = await EstudianteCtrl.GetEstudiantesAsync();
+            var materiasPermitidas = estudiantes
+                .Where(e => e.RepresentanteId == currentUser.Id)
+                .SelectMany(e => e.MateriaIds)
+                .ToHashSet();
+
+            if (!materiasPermitidas.Contains(MateriaId))
+            {
+                Snackbar.Add("No tiene permiso para ver las actividades de esta materia.", Severity.Warning);
+                Navigation.NavigateTo("/materias");
+                return;
+            }
+        }
+
+        try
+        {
+            materiaActual = await MateriasCtrl.GetMateriaByIdAsync(MateriaId);
+            
+            if (materiaActual == null)
+            {
+                Snackbar.Add("La materia especificada no existe.", Severity.Warning);
+                Navigation.NavigateTo("/materias");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error al validar la materia: {ex.Message}", Severity.Error);
+            Navigation.NavigateTo("/materias");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

@@ -1,0 +1,48 @@
+@page "/materias"
+@attribute [Authorize]
+@using NotiesBlazor.Controllers
+@using NotiesBlazor.Models
+@using noties.Models
+@inject UserController UserCtrl
+@inject NavigationManager Navigation
+
+@if (currentUser == null)
+{
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    </div>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-6">
+        @switch (currentUser.Role)
+        {
+            case UserRole.Administrador:
+                <VistaMateriasAdmin CurrentUser="currentUser" />
+                break;
+
+            case UserRole.Docente:
+                <VistaMateriasDocente CurrentUser="currentUser" />
+                break;
+
+            case UserRole.Representante:
+                <VistaMateriasRepresentante CurrentUser="currentUser" />
+                break;
+        }
+    </MudContainer>
+}
+
+@code {
+    private User? currentUser;
+
+    protected override void OnInitialized()
+    {
+        currentUser = UserCtrl.SessionUser;
+        
+        if (currentUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+    }
+}

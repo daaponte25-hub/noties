@@ -1,0 +1,113 @@
+@using noties.Models
+@using NotiesBlazor.Controllers
+@inject EstudianteController EstudianteCtrl
+@inject MateriasController MateriasCtrl
+@inject UserController UserCtrl
+@inject ISnackbar Snackbar
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.Person" Class="mr-3"/> Nuevo Estudiante
+        </MudText>
+    </TitleContent>
+
+    <DialogContent>
+        <MudTextField T="string" Label="Nombre completo" @bind-Value="estudiante.FullName" Required="true" Class="mb-3" />
+
+        <MudSelect T="string" Label="Representante" @bind-Value="estudiante.RepresentanteId" Class="mb-3" Required="true">
+            @foreach (var rep in representantes)
+            {
+                <MudSelectItem Value="@rep.Id">@rep.FullName (@rep.Email)</MudSelectItem>
+            }
+        </MudSelect>
+
+        <div class="mb-3">
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Materias</MudText>
+            @foreach (var m in todasMaterias)
+            {
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="materia_@m.Id"
+                           checked="@(materiasSeleccionadas.Contains(m.Id))"
+                           @onchange="@(e => ToggleMateria(e, m.Id))" />
+                    <label class="form-check-label" for="materia_@m.Id">@m.Nombre</label>
+                </div>
+            }
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="Cancelar">Cancelar</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Guardar">Registrar Estudiante</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
+
+    private Estudiante estudiante = new();
+    private List<NotiesBlazor.Models.User> representantes = new();
+    private List<NotiesBlazor.Controllers.MateriasController.Materia> todasMaterias = new();
+    private List<int> materiasSeleccionadas = new();
+
+    private void ToggleMateria(ChangeEventArgs e, int id)
+    {
+        bool checkedValue = false;
+
+        if (e.Value is bool boolValue)
+        {
+            checkedValue = boolValue;
+        }
+        else if (e.Value is string stringValue)
+        {
+            bool.TryParse(stringValue, out checkedValue);
+        }
+
+        if (checkedValue)
+        {
+            if (!materiasSeleccionadas.Contains(id)) materiasSeleccionadas.Add(id);
+        }
+        else
+        {
+            materiasSeleccionadas.Remove(id);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await UserCtrl.GetUsersAsync();
+        representantes = users.Where(u => u.Role == NotiesBlazor.Models.UserRole.Representante).ToList();
+
+        todasMaterias = await MateriasCtrl.GetMateriasAsync();
+    }
+
+    private void Cancelar() => MudDialog.Cancel();
+
+    private async Task Guardar()
+    {
+        if (string.IsNullOrWhiteSpace(estudiante.FullName))
+        {
+            Snackbar.Add("El nombre del estudiante es obligatorio.", Severity.Warning);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(estudiante.RepresentanteId))
+        {
+            Snackbar.Add("Debe seleccionar un representante.", Severity.Warning);
+            return;
+        }
+
+        try
+        {
+            estudiante.MateriaIds = materiasSeleccionadas.ToList();
+            await EstudianteCtrl.CreateEstudianteAsync(estudiante);
+
+            Snackbar.Add("Estudiante registrado correctamente.", Severity.Success);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}

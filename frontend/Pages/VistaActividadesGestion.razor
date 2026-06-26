@@ -1,0 +1,130 @@
+@using noties.Models
+@using NotiesBlazor.Controllers
+@inject ActividadController ActividadCtrl
+@inject IDialogService DialogService
+@inject ISnackbar Snackbar
+
+<MudText Typo="Typo.h4" GutterBottom="true">Actividades de: @Materia.Nombre</MudText>
+<MudText Typo="Typo.subtitle1" Class="text-muted mb-4">
+    Porcentaje evaluado de la materia: <b>@PorcentajeTotalAcumulado%</b> / 100%
+</MudText>
+
+<MudButton Variant="Variant.Filled" 
+           Color="Color.Primary" 
+           Class="mb-4 rounded-lg" 
+           Disabled="@(PorcentajeTotalAcumulado >= 100)"
+           OnClick="AbrirFormularioActividad">
+    Nueva Actividad
+</MudButton>
+
+@if (listaActividades == null || !listaActividades.Any())
+{
+    <MudAlert Severity="Severity.Info" Class="rounded-lg">No hay actividades de evaluación asignadas a esta materia.</MudAlert>
+}
+else
+{
+    <MudSimpleTable Style="overflow-x: auto;" Class="rounded-xl" Elevation="1">
+        <thead>
+            <tr>
+                <th>Actividad</th>
+                <th>Descripción</th>
+                <th>Ponderación</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var actividad in listaActividades)
+            {
+                <tr>
+                    <td><b>@(actividad.Nombre ?? "Sin nombre")</b></td>
+                    <td>@(actividad.Descripcion ?? "Sin descripción")</td>
+                    <td><MudChip T="string" Color="Color.Info" Size="Size.Small">@actividad.Porcentaje%</MudChip></td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <MudIconButton Icon="@Icons.Material.Filled.FormatListNumbered" 
+                                           Color="Color.Primary" 
+                                           Size="Size.Small" 
+                                           Title="Calificar Alumnos"
+                                           OnClick="@(() => AbrirPlanillaCalificaciones(actividad))" />
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                           Color="Color.Error" 
+                                           Size="Size.Small" 
+                                           Title="Eliminar Evaluación"
+                                           OnClick="@(() => EliminarActividad(actividad.Id))" />
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </MudSimpleTable>
+}
+
+@code {
+    [Parameter] public int MateriaId { get; set; }
+    [Parameter] public NotiesBlazor.Controllers.MateriasController.Materia Materia { get; set; } = default!;
+
+    private List<Actividad> listaActividades = new();
+    private double PorcentajeTotalAcumulado => listaActividades?.Sum(a => a.Porcentaje) ?? 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarActividades();
+    }
+
+    private async Task CargarActividades()
+    {
+        var actividades = await ActividadCtrl.GetActividadesByMateriaAsync(MateriaId);
+        listaActividades = actividades ?? new List<Actividad>();
+    }
+
+    private async Task AbrirFormularioActividad()
+    {
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+        var parametros = new DialogParameters<FormularioActividad> { { x => x.MateriaId, MateriaId } };
+        
+        var dialog = await DialogService.ShowAsync<FormularioActividad>("Crear Nueva Evaluación", parametros, opciones);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await CargarActividades();
+            StateHasChanged();
+        }
+    }
+
+    private async Task AbrirPlanillaCalificaciones(Actividad actividad)
+    {
+        var opciones = new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true };
+        
+        var parametros = new DialogParameters<PlanillaCalificacionesDialog> 
+        { 
+            { x => x.ActividadActual, actividad },
+            { x => x.MateriaId, MateriaId }
+        };
+
+        var dialog = await DialogService.ShowAsync<PlanillaCalificacionesDialog>("Planilla de Notas", parametros, opciones);
+        var result = await dialog.Result;
+
+        if (result != null && !result.Canceled)
+        {
+            await CargarActividades();
+            StateHasChanged();
+        }
+    }
+
+    private async Task EliminarActividad(int id)
+    {
+        try
+        {
+            await ActividadCtrl.DeleteActividadAsync(id);
+            Snackbar.Add("Actividad eliminada con éxito.", Severity.Success);
+            await CargarActividades();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}

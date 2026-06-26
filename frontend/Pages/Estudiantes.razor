@@ -1,0 +1,58 @@
+@page "/estudiantes"
+@attribute [Authorize]
+@using NotiesBlazor.Components
+@using NotiesBlazor.Models
+@using NotiesBlazor.Services
+@inject UserController UserCtrl
+@inject NavigationManager Navigation
+
+@if (currentUser == null)
+{
+    <div style="flex-grow: 1; display: flex; align-items: center; justify-content: center; height: 100vh;">
+        <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+    </div>
+}
+else
+{
+    <MudContainer MaxWidth="MaxWidth.Large" Class="mt-6">
+        @switch (currentUser.Role)
+        {
+            case UserRole.Administrador:
+                <VistaEstudiantesAdmin CurrentUser="currentUser" />
+                break;
+
+            case UserRole.Docente:
+                <VistaEstudiantesDocente CurrentUser="currentUser" />
+                break;
+                
+            default:
+                var descriptor = DescriptorRolFactory.Crear(currentUser.Role);
+                <div style="text-align: center; padding: 2rem;">
+                    <MudProgressCircular Indeterminate="true" Color="Color.Primary" />
+                    <p style="margin-top: 1rem; color: #64748b; font-size: 0.875rem;">@descriptor.ObtenerDashboardInfo()</p>
+                </div>
+                break;
+        }
+    </MudContainer>
+}
+
+@code {
+    private User? currentUser;
+
+    protected override void OnInitialized()
+    {
+        currentUser = UserCtrl.SessionUser;
+        
+        if (currentUser == null)
+        {
+            Navigation.NavigateTo("/login");
+            return;
+        }
+
+        if (currentUser.Role == UserRole.Representante)
+        {
+            Navigation.NavigateTo("/materias");
+            return; 
+        }
+    }
+}

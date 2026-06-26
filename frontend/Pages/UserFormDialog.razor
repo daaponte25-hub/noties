@@ -1,0 +1,202 @@
+<MudDialog Style="border-radius: 1rem; overflow: hidden; max-width: 500px;">
+    <TitleContent>
+            <div class="d-flex align-center gap-2">
+                @if (UserToEdit == null)
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.PersonAdd" Color="Color.Primary" />
+                    <MudText Typo="Typo.h6" Class="font-weight-bold">Crear Nuevo Usuario</MudText>
+                }
+                else
+                {
+                    <MudIcon Icon="@Icons.Material.Filled.Edit" Color="Color.Primary" />
+                    <MudText Typo="Typo.h6" Class="font-weight-bold">Modificar Usuario</MudText>
+                }
+            </div>
+        </TitleContent>
+        <DialogContent>
+            <MudForm @ref="form" @bind-IsValid="@formIsValid" Class="d-flex flex-column gap-4 py-2">
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Filled" Style="border-radius: 0.5rem; font-size: 0.75rem;">
+                        @errorMessage
+                    </MudAlert>
+                }
+
+                <div>
+                    <label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #64748b; font-size: 0.7rem;">Nombre Completo *</label>
+                    <MudTextField T="string" 
+                                  @bind-Value="fullName" 
+                                  Required="true" 
+                                  RequiredError="El nombre completo es requerido."
+                                  Placeholder="Ej. Juan de la Cruz" 
+                                  Variant="Variant.Outlined" 
+                                  Margin="Margin.Dense" />
+                </div>
+
+                <div>
+                    <label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #64748b; font-size: 0.7rem;">Correo Electrónico *</label>
+                    <MudTextField T="string" 
+                                  @bind-Value="email" 
+                                  Required="true" 
+                                  RequiredError="El correo electrónico es requerido."
+                                  InputType="InputType.Email"
+                                  Placeholder="ejemplo@noties.com" 
+                                  Variant="Variant.Outlined" 
+                                  Margin="Margin.Dense" />
+                </div>
+
+                <div>
+                    <div class="d-flex align-center justify-space-between mb-1">
+                        <label class="text-caption font-weight-bold uppercase" style="color: #64748b; font-size: 0.7rem;">
+                            Contraseña @(UserToEdit == null ? "*" : "")
+                        </label>
+                        @if (UserToEdit != null)
+                        {
+                            <span style="font-size: 0.65rem; color: #94a3b8;">Dejar vacío para mantener igual</span>
+                        }
+                    </div>
+                    <MudTextField T="string" 
+                                  @bind-Value="password" 
+                                  Required="@(UserToEdit == null)" 
+                                  RequiredError="La contraseña es requerida para nuevos usuarios."
+                                  Placeholder="@(UserToEdit != null ? "•••••••• o ingresar nueva" : "Mínimo 4 caracteres")" 
+                                  Variant="Variant.Outlined" 
+                                  Margin="Margin.Dense" />
+                </div>
+
+                <div class="d-flex gap-4">
+                    <div class="flex-1" style="flex: 1;">
+                        <label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #64748b; font-size: 0.7rem;">Rol Asignado</label>
+                        <MudSelect T="UserRole" @bind-Value="role" Variant="Variant.Outlined" Margin="Margin.Dense">
+                            <MudSelectItem Value="UserRole.Administrador">Administrador</MudSelectItem>
+                            <MudSelectItem Value="UserRole.Docente">Docente</MudSelectItem>
+                            <MudSelectItem Value="UserRole.Representante">Representante</MudSelectItem>
+                        </MudSelect>
+                    </div>
+
+                    <div class="flex-1" style="flex: 1;">
+                        <label class="d-block text-caption font-weight-bold uppercase mb-1" style="color: #64748b; font-size: 0.7rem;">Estado</label>
+                        <MudToggleGroup T="UserStatus" @bind-Value="status" Mandatory="true" Class="rounded-lg" Style="border: 1px solid #ccc; overflow: hidden;">
+                            <MudToggleItem Value="UserStatus.Activo" Text="Activo" />
+                            <MudToggleItem Value="UserStatus.Inactivo" Text="Inactivo" />
+                        </MudToggleGroup>
+                    </div>
+                </div>
+            </MudForm>
+        </DialogContent>
+        <DialogActions>
+            <div class="d-flex justify-end gap-3 pa-4 w-full" style="width: 100%;">
+                <MudButton Variant="Variant.Filled" Color="Color.Default" OnClick="Cancel" Class="rounded-lg" Style="border-radius: 0.5rem; text-transform: none;">
+                    Cancelar
+                </MudButton>
+                <MudButton Variant="Variant.Filled" 
+                           Color="Color.Primary" 
+                           OnClick="Submit" 
+                           Class="rounded-lg" 
+                           Style="background-color: #1e1b4b; color: white; border-radius: 0.5rem; text-transform: none;"
+                           Disabled="isSubmitting">
+                    @if (isSubmitting)
+                    {
+                        <MudProgressCircular Size="Size.Small" Indeterminate="true" Class="mr-2" />
+                        <span>Procesando...</span>
+                    }
+                    else
+                    {
+                        <span>@(UserToEdit == null ? "Registrar" : "Guardar Cambios")</span>
+                    }
+                </MudButton>
+            </div>
+        </DialogActions>
+    </MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; } = default!;
+    [Parameter] public User? UserToEdit { get; set; }
+
+    [Inject] private UserController UserController { get; set; } = default!;
+
+    private MudForm form = default!;
+    private bool formIsValid;
+    private bool isSubmitting;
+    private string? errorMessage;
+
+    // Field Binders
+    private string fullName = "";
+    private string email = "";
+    private string password = "";
+    private UserRole role = UserRole.Docente;
+    private UserStatus status = UserStatus.Activo;
+
+    protected override void OnInitialized()
+    {
+        if (UserToEdit != null)
+        {
+            fullName = UserToEdit.FullName;
+            email = UserToEdit.Email;
+            password = ""; // Keep blank unless resetting
+            role = UserToEdit.Role;
+            status = UserToEdit.Status;
+        }
+        else
+        {
+            fullName = "";
+            email = "";
+            password = "";
+            role = UserRole.Docente;
+            status = UserStatus.Activo;
+        }
+    }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    private async Task Submit()
+    {
+        await form.Validate();
+        if (!formIsValid)
+        {
+            errorMessage = "Por favor complete todos los campos requeridos correctamente.";
+            return;
+        }
+
+        isSubmitting = true;
+        errorMessage = null;
+
+        try
+        {
+            if (UserToEdit == null)
+            {
+                var newUser = new User
+                {
+                    FullName = fullName.Trim(),
+                    Email = email.Trim().ToLower(),
+                    Password = password,
+                    Role = role,
+                    Status = status
+                };
+                await UserController.CreateUserAsync(newUser);
+            }
+            else
+            {
+                var updatedUser = new User
+                {
+                    FullName = fullName.Trim(),
+                    Email = email.Trim().ToLower(),
+                    Password = string.IsNullOrWhiteSpace(password) ? "" : password,
+                    Role = role,
+                    Status = status
+                };
+                await UserController.UpdateUserAsync(UserToEdit.Id, updatedUser);
+            }
+
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}
