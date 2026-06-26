@@ -21,9 +21,9 @@
     "id": "coord-2",
     "fullName": "Roger Salgado",
     "email": "rogeryonatan@gmail.com",
-    "password": "rogeryonatan",
-    "role": "Representante",
-    "status": "Inactivo",
+    "password": "roger123",
+    "role": "Docente",
+    "status": "Activo",
     "createdAt": "2026-05-26T15:47:05.133Z"
   },
   {

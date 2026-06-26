@@ -33,6 +33,7 @@ else
             <MudTh>Nombre</MudTh>
             <MudTh>Representante</MudTh>
             <MudTh>Materias</MudTh>
+            <MudTh>Acciones</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd>@context.FullName</MudTd>
@@ -51,6 +52,15 @@ else
                     }
                 }
             </MudTd>
+            <MudTd>
+    <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                   Color="Color.Primary"
+                   OnClick="@(() => EditarEstudiante(context))" />
+
+    <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                   Color="Color.Error"
+                   OnClick="@(() => EliminarEstudiante(context))" />
+</MudTd>
         </RowTemplate>
     </MudTable>
 }
@@ -95,4 +105,51 @@ else
             StateHasChanged();
         }
     }
+ private async Task EliminarEstudiante(noties.Models.Estudiante estudiante)
+{
+    bool? confirmado = await DialogService.ShowMessageBox(
+        "Confirmar eliminación",
+        $"¿Está seguro que desea eliminar al estudiante {estudiante.FullName}?",
+        yesText: "Eliminar",
+        cancelText: "Cancelar"
+    );
+
+    if (confirmado == true)
+    {
+        await EstudianteCtrl.DeleteEstudianteAsync(estudiante.Id);
+
+        await CargarEstudiantes();
+
+        StateHasChanged();
+    }
+}
+
+private async Task EditarEstudiante(noties.Models.Estudiante estudiante)
+{
+    var parametros = new DialogParameters
+    {
+        { "EstudianteEditar", estudiante }
+    };
+
+    var opciones = new DialogOptions
+    {
+        MaxWidth = MaxWidth.Small,
+        FullWidth = true
+    };
+
+    var dialog = await DialogService.ShowAsync<FormularioEstudiante>(
+        "Editar Estudiante",
+        parametros,
+        opciones
+    );
+
+    var resultado = await dialog.Result;
+
+    if (resultado != null && !resultado.Canceled)
+    {
+        await CargarEstudiantes();
+        StateHasChanged();
+    }
+}
+
 }

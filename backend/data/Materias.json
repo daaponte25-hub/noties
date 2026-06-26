@@ -28,5 +28,10 @@
     "Id": 6,
     "Nombre": "Ingenieria de software",
     "Profesor": "Maria Ova"
+  },
+  {
+    "Id": 7,
+    "Nombre": "Programaci\u00F3n Web",
+    "Profesor": "Roger Salgado"
   }
 ]

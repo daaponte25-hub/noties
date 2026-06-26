@@ -5,19 +5,9 @@
     "Nombre": "Prueba",
     "Descripcion": "NUEVA",
     "Porcentaje": 70,
-    "Nota": 0,
     "FechaEntrega": null,
-    "CreadoPor": "Roger Aparicio"
-  },
-  {
-    "Id": 2,
-    "MateriaId": 1,
-    "Nombre": "Examen matematica de ecuaciones",
-    "Descripcion": "hola estas son los temaws",
-    "Porcentaje": 60,
-    "Nota": 12,
-    "FechaEntrega": null,
-    "CreadoPor": "Roger Aparicio"
+    "CreadoPor": "Roger Aparicio",
+    "NotasPorAlumno": ""
   },
   {
     "Id": 3,
@@ -25,8 +15,28 @@
     "Nombre": "DAS",
     "Descripcion": "PRUEBA JJS",
     "Porcentaje": 80,
-    "Nota": 0,
     "FechaEntrega": null,
-    "CreadoPor": "Roger Aparicio"
+    "CreadoPor": "Roger Aparicio",
+    "NotasPorAlumno": ""
+  },
+  {
+    "Id": 4,
+    "MateriaId": 1,
+    "Nombre": "Prueba",
+    "Descripcion": "Nueva",
+    "Porcentaje": 50,
+    "FechaEntrega": null,
+    "CreadoPor": "Roger Aparicio",
+    "NotasPorAlumno": ""
+  },
+  {
+    "Id": 5,
+    "MateriaId": 7,
+    "Nombre": "Proyecto",
+    "Descripcion": "P\u00E1gina web",
+    "Porcentaje": 70,
+    "FechaEntrega": null,
+    "CreadoPor": "Roger Salgado",
+    "NotasPorAlumno": ""
   }
 ]

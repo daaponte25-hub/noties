@@ -38,14 +38,17 @@
 
     <DialogActions>
         <MudButton Variant="Variant.Text" Color="Color.Secondary" OnClick="Cancelar">Cancelar</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Guardar">Registrar Estudiante</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Guardar">@(EstudianteEditar == null ? "Registrar Estudiante" : "Guardar Cambios")</MudButton>
     </DialogActions>
 </MudDialog>
 
 @code {
     [CascadingParameter] MudDialogInstance MudDialog { get; set; } = default!;
 
-    private Estudiante estudiante = new();
+[Parameter]
+public Estudiante? EstudianteEditar { get; set; }
+
+private Estudiante estudiante = new();
     private List<NotiesBlazor.Models.User> representantes = new();
     private List<NotiesBlazor.Controllers.MateriasController.Materia> todasMaterias = new();
     private List<int> materiasSeleccionadas = new();
@@ -74,12 +77,27 @@
     }
 
     protected override async Task OnInitializedAsync()
-    {
-        var users = await UserCtrl.GetUsersAsync();
-        representantes = users.Where(u => u.Role == NotiesBlazor.Models.UserRole.Representante).ToList();
+{
+    var users = await UserCtrl.GetUsersAsync();
+    representantes = users.Where(u => u.Role == NotiesBlazor.Models.UserRole.Representante).ToList();
 
-        todasMaterias = await MateriasCtrl.GetMateriasAsync();
+    todasMaterias = await MateriasCtrl.GetMateriasAsync();
+
+    if (EstudianteEditar != null)
+    {
+        estudiante = new Estudiante
+        {
+            Id = EstudianteEditar.Id,
+            FullName = EstudianteEditar.FullName,
+            RepresentanteId = EstudianteEditar.RepresentanteId,
+            MateriaIds = EstudianteEditar.MateriaIds.ToList(),
+            Curso = EstudianteEditar.Curso,
+            CreatedAt = EstudianteEditar.CreatedAt
+        };
+
+        materiasSeleccionadas = estudiante.MateriaIds.ToList();
     }
+}
 
     private void Cancelar() => MudDialog.Cancel();
 
@@ -100,7 +118,14 @@
         try
         {
             estudiante.MateriaIds = materiasSeleccionadas.ToList();
-            await EstudianteCtrl.CreateEstudianteAsync(estudiante);
+            if (EstudianteEditar == null)
+{
+    await EstudianteCtrl.CreateEstudianteAsync(estudiante);
+}
+else
+{
+    await EstudianteCtrl.UpdateEstudianteAsync(estudiante.Id, estudiante);
+}
 
             Snackbar.Add("Estudiante registrado correctamente.", Severity.Success);
             MudDialog.Close(DialogResult.Ok(true));

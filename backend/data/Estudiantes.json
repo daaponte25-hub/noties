@@ -1,1 +1,15 @@
-[]
+[
+  {
+    "Id": "est-1782446532346",
+    "FullName": "Yor Gomez",
+    "RepresentanteId": "coord-1",
+    "MateriaIds": [
+      1,
+      6,
+      3,
+      7
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-06-26T04:02:12.3473451Z"
+  }
+]

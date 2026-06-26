@@ -75,6 +75,48 @@ namespace NotiesBlazor.Controllers
             return nuevo;
         }
 
+        public async Task<Estudiante?> UpdateEstudianteAsync(string id, Estudiante actualizado)
+        {
+            var estudiantes = await GetEstudiantesAsync();
+
+            var estudianteExistente = estudiantes.FirstOrDefault(e => e.Id == id);
+
+            if (estudianteExistente == null)
+            {
+                return null;
+            }
+
+            estudianteExistente.FullName = actualizado.FullName.Trim();
+            estudianteExistente.RepresentanteId = actualizado.RepresentanteId;
+            estudianteExistente.MateriaIds = actualizado.MateriaIds;
+            estudianteExistente.Curso = actualizado.Curso;
+
+            await SaveEstudiantesAsync(estudiantes);
+
+            return estudianteExistente;
+        }
+
+        public async Task DeleteEstudianteAsync(string id)
+        {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                throw new Exception("El identificador del estudiante es obligatorio.");
+            }
+
+            var estudiantes = await GetEstudiantesAsync();
+
+            var estudiante = estudiantes.FirstOrDefault(e => e.Id == id);
+
+            if (estudiante == null)
+            {
+                throw new Exception("El estudiante no existe.");
+            }
+
+            estudiantes.Remove(estudiante);
+
+            await SaveEstudiantesAsync(estudiantes);
+        }
+
         private async Task SaveEstudiantesAsync(List<Estudiante> estudiantes)
         {
             try
