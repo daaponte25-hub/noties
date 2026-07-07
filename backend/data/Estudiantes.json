@@ -8,5 +8,15 @@
     ],
     "Curso": "",
     "CreatedAt": "2026-07-07T02:21:33.3058121Z"
+  },
+  {
+    "Id": "est-1783463707112",
+    "FullName": "pepito",
+    "RepresentanteId": "coord-1",
+    "MateriaIds": [
+      1
+    ],
+    "Curso": "",
+    "CreatedAt": "2026-07-07T22:35:07.1133273Z"
   }
 ]

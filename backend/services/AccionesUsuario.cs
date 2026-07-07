@@ -3,7 +3,6 @@ using NotiesBlazor.Models;
 namespace NotiesBlazor.Services
 {
     /// <summary>
-    /// Clase base abstracta que define el contrato para los comportamientos de cada rol (Abstracción).
     /// </summary>
     public abstract class DescriptorRol
     {
@@ -12,7 +11,6 @@ namespace NotiesBlazor.Services
     }
 
     /// <summary>
-    /// Comportamiento específico para el Administrador (Polimorfismo).
     /// </summary>
     public class AdministradorDescriptor : DescriptorRol
     {
@@ -21,7 +19,6 @@ namespace NotiesBlazor.Services
     }
 
     /// <summary>
-    /// Comportamiento específico para el Docente (Polimorfismo).
     /// </summary>
     public class DocenteDescriptor : DescriptorRol
     {
@@ -30,7 +27,6 @@ namespace NotiesBlazor.Services
     }
 
     /// <summary>
-    /// Comportamiento específico para el Representante (Polimorfismo).
     /// </summary>
     public class RepresentanteDescriptor : DescriptorRol
     {
