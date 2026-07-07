@@ -38,7 +38,7 @@
                                 <td>@estudiante.FullName</td>
                                 <td>
                                     @* 🌟 Forzamos T="double" y permitimos modificadores visuales limpios *@
-                                    <MudNumericField T="double" 
+                                    <MudNumericField T="double?" 
                                                      @bind-Value="notasTemporales[estId]" 
                                                      Min="0.0" Max="20.0" Step="0.5"
                                                      Variant="Variant.Outlined" 
@@ -54,7 +54,7 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancelar" Class="px-4">Cancelar</MudButton>
-        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarNotas" Class="px-4">Guardar Notas</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="GuardarNotas" Class="px-4" Disabled="!CanManageNotas">Guardar Notas</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -64,7 +64,8 @@
     [Parameter] public int MateriaId { get; set; }
 
     private List<User> listaEstudiantes = new();
-    private Dictionary<string, double> notasTemporales = new();
+    private Dictionary<string, double?> notasTemporales = new();
+    private bool CanManageNotas => UserCtrl.SessionUser?.Role == UserRole.Administrador || UserCtrl.SessionUser?.Role == UserRole.Docente;
 
     protected override async Task OnInitializedAsync()
     {
@@ -76,9 +77,16 @@
                 .OrderBy(u => u.FullName)
                 .ToList() ?? new();
 
+            if (!CanManageNotas)
+            {
+                Snackbar.Add("Solo docentes y administradores pueden modificar calificaciones.", Severity.Warning);
+                MudDialog.Cancel();
+                return;
+            }
+
             foreach (var est in listaEstudiantes) 
             {
-                notasTemporales[est.Id] = 0.0;
+                notasTemporales[est.Id] = null;
             }
 
             if (!string.IsNullOrWhiteSpace(ActividadActual.NotasPorAlumno))
@@ -109,7 +117,9 @@
     {
         try
         {
-            var lineas = notasTemporales.Select(kvp => $"{kvp.Key}:{kvp.Value.ToString("0.#", CultureInfo.InvariantCulture)}");
+            var lineas = notasTemporales
+                .Where(kvp => kvp.Value.HasValue)
+                .Select(kvp => $"{kvp.Key}:{kvp.Value.Value.ToString("0.#", CultureInfo.InvariantCulture)}");
             ActividadActual.NotasPorAlumno = string.Join(",", lineas);
 
             await ActividadCtrl.UpdateActividadAsync(ActividadActual.Id, ActividadActual);

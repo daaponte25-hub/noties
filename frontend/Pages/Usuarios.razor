@@ -333,8 +333,16 @@ else
         }
     }
 
+    private bool CanManageUsers => currentUser?.Role == UserRole.Administrador;
+
     private async Task ToggleStatus(User user)
     {
+        if (!CanManageUsers)
+        {
+            ShowWarning("Solo los administradores pueden cambiar el estado de los usuarios.");
+            return;
+        }
+
         if (user.Email == currentUser?.Email) return;
 
         var targetStatus = user.Status == UserStatus.Activo ? UserStatus.Inactivo : UserStatus.Activo;
@@ -352,12 +360,24 @@ else
 
     private void RequestDelete(User user)
     {
+        if (!CanManageUsers)
+        {
+            ShowWarning("Solo los administradores pueden eliminar usuarios.");
+            return;
+        }
+
         if (user.Email == currentUser?.Email) return;
         deletingId = user.Id;
     }
 
     private async Task ConfirmDelete(string userId)
     {
+        if (!CanManageUsers)
+        {
+            ShowWarning("Solo los administradores pueden eliminar usuarios.");
+            return;
+        }
+
         try
         {
             await UserController.DeleteUserAsync(userId);
@@ -372,6 +392,12 @@ else
 
     private async Task OpenUserFormDialog(User? user)
     {
+        if (!CanManageUsers)
+        {
+            ShowWarning("Solo los administradores pueden modificar usuarios.");
+            return;
+        }
+
         var parameters = new DialogParameters<UserFormDialog>();
         parameters.Add(x => x.UserToEdit, user);
         var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Small };
