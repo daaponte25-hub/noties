@@ -11,12 +11,14 @@ namespace NotiesBlazor.Controllers
 	public class MateriasController: ControllerBase
 	{
 		private readonly string _filePath;
-		private static readonly object _lock = new();
+        private readonly ActividadController? _actividadController;
+        private static readonly object _lock = new();
 
-		public MateriasController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment? env = null)
-		{
-			string rootDir = env?.ContentRootPath ?? Directory.GetCurrentDirectory();
-			_filePath = Path.Combine(rootDir, @"backend\\data", "Materias.json");
+        public MateriasController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment? env = null, ActividadController? actividadController = null)
+        {
+            string rootDir = env?.ContentRootPath ?? Directory.GetCurrentDirectory();
+            _actividadController = actividadController;
+            _filePath = Path.Combine(rootDir, @"backend\\data", "Materias.json");
 
 			string? dir = Path.GetDirectoryName(_filePath);
 			if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
@@ -149,7 +151,15 @@ namespace NotiesBlazor.Controllers
 			}
 
 			materias.Remove(targetMateria);
-			await SaveMateriasAsync(materias);
-		}
+
+            if (_actividadController != null)
+            {
+                var actividades = await _actividadController.GetActividadesAsync();
+                actividades.RemoveAll(a => a.MateriaId == id);
+                await _actividadController.SaveActividadesAsync(actividades);
+            }
+
+            await SaveMateriasAsync(materias);
+        }
 	}
 }

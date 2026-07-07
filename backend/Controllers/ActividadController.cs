@@ -13,7 +13,7 @@ namespace NotiesBlazor.Controllers
     {
         private readonly string _filePath;
         private static readonly object _lock = new();
-        private readonly MateriasController _materiasController;
+        private readonly MateriasController? _materiasController;
 
         public ActividadController(Microsoft.AspNetCore.Hosting.IWebHostEnvironment? env = null)
         {
@@ -31,7 +31,7 @@ namespace NotiesBlazor.Controllers
                 System.IO.File.WriteAllText(_filePath, "[]");
             }
 
-            _materiasController = new MateriasController(env);
+            _materiasController = null;
         }
 
         public async Task<List<Actividad>> GetActividadesAsync()
@@ -72,10 +72,14 @@ namespace NotiesBlazor.Controllers
                 throw new Exception("El nombre de la actividad y el rol creador son requeridos.");
             }
 
-            var materia = await _materiasController.GetMateriaByIdAsync(newActividad.MateriaId);
-            if (materia == null)
+            if (_materiasController != null)
             {
-                throw new Exception("La materia especificada no existe.");
+                var materia = await _materiasController.GetMateriaByIdAsync(newActividad.MateriaId);
+
+                if (materia == null)
+                {
+                    throw new Exception("La materia especificada no existe.");
+                }
             }
 
             if (newActividad.Porcentaje <= 0 || newActividad.Porcentaje > 100)
@@ -162,7 +166,7 @@ namespace NotiesBlazor.Controllers
             await SaveActividadesAsync(actividades);
         }
 
-        private async Task SaveActividadesAsync(List<Actividad> actividades)
+        public async Task SaveActividadesAsync(List<Actividad> actividades)
         {
             lock (_lock)
             {

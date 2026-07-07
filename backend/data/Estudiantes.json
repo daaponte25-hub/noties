@@ -1,15 +1,12 @@
 [
   {
-    "Id": "est-1782446532346",
-    "FullName": "Yor Gomez",
+    "Id": "est-1783390893299",
+    "FullName": "Sergio Ramos",
     "RepresentanteId": "coord-1",
     "MateriaIds": [
-      1,
-      6,
-      3,
-      7
+      1
     ],
     "Curso": "",
-    "CreatedAt": "2026-06-26T04:02:12.3473451Z"
+    "CreatedAt": "2026-07-07T02:21:33.3058121Z"
   }
 ]

@@ -1,42 +1,22 @@
 [
   {
     "Id": 1,
-    "MateriaId": 4,
-    "Nombre": "Prueba",
-    "Descripcion": "NUEVA",
-    "Porcentaje": 70,
-    "FechaEntrega": null,
-    "CreadoPor": "Roger Aparicio",
-    "NotasPorAlumno": ""
-  },
-  {
-    "Id": 3,
-    "MateriaId": 6,
-    "Nombre": "DAS",
-    "Descripcion": "PRUEBA JJS",
-    "Porcentaje": 80,
-    "FechaEntrega": null,
-    "CreadoPor": "Roger Aparicio",
-    "NotasPorAlumno": ""
-  },
-  {
-    "Id": 4,
     "MateriaId": 1,
-    "Nombre": "Prueba",
-    "Descripcion": "Nueva",
-    "Porcentaje": 50,
+    "Nombre": "Sprint1",
+    "Descripcion": "Entrega y defensa",
+    "Porcentaje": 40,
     "FechaEntrega": null,
     "CreadoPor": "Roger Aparicio",
     "NotasPorAlumno": ""
   },
   {
-    "Id": 5,
-    "MateriaId": 7,
-    "Nombre": "Proyecto",
-    "Descripcion": "P\u00E1gina web",
-    "Porcentaje": 70,
+    "Id": 2,
+    "MateriaId": 1,
+    "Nombre": "Sprint2",
+    "Descripcion": "Entrega y defensa",
+    "Porcentaje": 60,
     "FechaEntrega": null,
-    "CreadoPor": "Roger Salgado",
+    "CreadoPor": "Roger Aparicio",
     "NotasPorAlumno": ""
   }
 ]

@@ -47,11 +47,34 @@ else
                             </MudAvatar>
                         </CardHeaderActions>
                     </MudCardHeader>
-                    <MudCardActions Class="justify-end px-4">
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary" EndIcon="@Icons.Material.Filled.ArrowForward" Size="Size.Small" Class="rounded-pill" OnClick="@(() => IrAActividades(materia.Id))">
-                            Ver Actividades
-                        </MudButton>
-                    </MudCardActions>
+                        <MudCardActions Class="justify-end px-4">
+                            <MudButton Variant="Variant.Outlined" 
+                                       Color="Color.Primary" 
+                                       StartIcon="@Icons.Material.Filled.Edit"
+                                       Size="Size.Small"
+                                       Class="rounded-pill"
+                                       OnClick="@(() => EditarMateria(materia))">
+                                        Editar
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Outlined" 
+                                       Color="Color.Error" 
+                                       StartIcon="@Icons.Material.Filled.Delete"
+                                       Size="Size.Small"
+                                       Class="rounded-pill"
+                                       OnClick="@(() => EliminarMateria(materia))">
+                                        Eliminar
+                            </MudButton>
+
+                            <MudButton Variant="Variant.Filled" 
+                                       Color="Color.Primary" 
+                                       EndIcon="@Icons.Material.Filled.ArrowForward" 
+                                       Size="Size.Small" 
+                                       Class="rounded-pill" 
+                                       OnClick="@(() => IrAActividades(materia.Id))">
+                                        Ver Actividades
+                            </MudButton>
+                        </MudCardActions>
                 </MudCard>
             </MudItem>
         }
@@ -92,6 +115,52 @@ else
             StateHasChanged();
         }
     }
+
+    private async Task EditarMateria(Materia materia)
+{
+    var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
+
+    var parametros = new DialogParameters
+    {
+        { "MateriaEditar", materia }
+    };
+
+    var dialog = await DialogService.ShowAsync<FormularioMateria>("", parametros, opciones);
+    var result = await dialog.Result;
+
+    if (result != null && !result.Canceled)
+    {
+        await CargarMaterias();
+        StateHasChanged();
+    }
+}
+
+private async Task EliminarMateria(Materia materia)
+{
+    bool? confirmar = await DialogService.ShowMessageBox(
+        "Eliminar materia",
+        $"¿Está seguro de eliminar la materia '{materia.Nombre}'?",
+        yesText: "Eliminar",
+        cancelText: "Cancelar"
+    );
+
+    if (confirmar == true)
+    {
+        try
+        {
+            await MateriasCtrl.DeleteMateriaAsync(materia.Id);
+
+            Snackbar.Add("Materia eliminada correctamente.", Severity.Success);
+
+            await CargarMaterias();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add(ex.Message, Severity.Error);
+        }
+    }
+}
 
     private void IrAActividades(int id) => Navigation.NavigateTo($"/materias/{id}/actividades");
 }
