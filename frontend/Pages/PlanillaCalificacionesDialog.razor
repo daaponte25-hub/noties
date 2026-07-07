@@ -3,6 +3,7 @@
 @using System.Globalization @* 🌟 Esencial para no romper el string con comas decimales *@
 @inject ActividadController ActividadCtrl
 @inject UserController UserCtrl
+@inject EstudianteController EstudianteCtrl
 @inject ISnackbar Snackbar
 
 <MudDialog Style="border-radius: 1rem; max-width: 500px;">
@@ -18,7 +19,7 @@
         }
         else if (!listaEstudiantes.Any())
         {
-            <MudAlert Severity="Severity.Warning" Class="rounded-lg">No hay estudiantes activos registrados en el sistema.</MudAlert>
+            <MudAlert Severity="Severity.Warning" Class="rounded-lg">No hay estudiantes registrados para esta materia.</MudAlert>
         }
         else
         {
@@ -37,7 +38,7 @@
                             <tr>
                                 <td>@estudiante.FullName</td>
                                 <td>
-                                    @* 🌟 Forzamos T="double" y permitimos modificadores visuales limpios *@
+                                    @* 🌟 Forzamos T="double?" para aceptar nulos cuando no hay nota *@
                                     <MudNumericField T="double?" 
                                                      @bind-Value="notasTemporales[estId]" 
                                                      Min="0.0" Max="20.0" Step="0.5"
@@ -63,7 +64,8 @@
     [Parameter] public Actividad ActividadActual { get; set; } = default!;
     [Parameter] public int MateriaId { get; set; }
 
-    private List<User> listaEstudiantes = new();
+    // Cambiado: ahora listamos Estudiantes (persistidos en backend/data/Estudiantes.json)
+    private List<Estudiante> listaEstudiantes = new();
     private Dictionary<string, double?> notasTemporales = new();
     private bool CanManageNotas => UserCtrl.SessionUser?.Role == UserRole.Administrador || UserCtrl.SessionUser?.Role == UserRole.Docente;
 
@@ -71,10 +73,13 @@
     {
         try
         {
-            var usuarios = await UserCtrl.GetUsersAsync();
-            listaEstudiantes = usuarios?
-                .Where(u => u.Status == UserStatus.Activo && u.Role != UserRole.Administrador && u.Role != UserRole.Docente)
-                .OrderBy(u => u.FullName)
+            // Obtener estudiantes desde el controlador de estudiantes
+            var estudiantes = await EstudianteCtrl.GetEstudiantesAsync();
+
+            // Mostrar solo los estudiantes inscritos en la materia actual
+            listaEstudiantes = estudiantes?
+                .Where(e => e.MateriaIds != null && e.MateriaIds.Contains(MateriaId))
+                .OrderBy(e => e.FullName)
                 .ToList() ?? new();
 
             if (!CanManageNotas)
