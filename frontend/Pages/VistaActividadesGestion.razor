@@ -1,6 +1,7 @@
 @using noties.Models
 @using NotiesBlazor.Controllers
 @inject ActividadController ActividadCtrl
+@inject UserController UserCtrl
 @inject IDialogService DialogService
 @inject ISnackbar Snackbar
 
@@ -12,8 +13,8 @@
 <MudButton Variant="Variant.Filled" 
            Color="Color.Primary" 
            Class="mb-4 rounded-lg" 
-           Disabled="@(PorcentajeTotalAcumulado >= 100)"
-           OnClick="AbrirFormularioActividad">
+           Disabled="@(PorcentajeTotalAcumulado >= 100 || !CanManageActivities)"
+           OnClick="@(() => AbrirFormularioActividad())">
     Nueva Actividad
 </MudButton>
 
@@ -41,17 +42,26 @@ else
                     <td><MudChip T="string" Color="Color.Info" Size="Size.Small">@actividad.Porcentaje%</MudChip></td>
                     <td>
                         <div class="d-flex gap-2">
-                            <MudIconButton Icon="@Icons.Material.Filled.FormatListNumbered" 
-                                           Color="Color.Primary" 
-                                           Size="Size.Small" 
-                                           Title="Calificar Alumnos"
-                                           OnClick="@(() => AbrirPlanillaCalificaciones(actividad))" />
+                            @if (CanManageActivities)
+                            {
+                                <MudIconButton Icon="@Icons.Material.Filled.Edit" 
+                                               Color="Color.Primary" 
+                                               Size="Size.Small" 
+                                               Title="Editar Evaluación"
+                                               OnClick="@(() => AbrirFormularioActividad(actividad))" />
 
-                            <MudIconButton Icon="@Icons.Material.Filled.Delete" 
-                                           Color="Color.Error" 
-                                           Size="Size.Small" 
-                                           Title="Eliminar Evaluación"
-                                           OnClick="@(() => EliminarActividad(actividad.Id))" />
+                                <MudIconButton Icon="@Icons.Material.Filled.FormatListNumbered" 
+                                               Color="Color.Primary" 
+                                               Size="Size.Small" 
+                                               Title="Calificar Alumnos"
+                                               OnClick="@(() => AbrirPlanillaCalificaciones(actividad))" />
+
+                                <MudIconButton Icon="@Icons.Material.Filled.Delete" 
+                                               Color="Color.Error" 
+                                               Size="Size.Small" 
+                                               Title="Eliminar Evaluación"
+                                               OnClick="@(() => EliminarActividad(actividad.Id))" />
+                            }
                         </div>
                     </td>
                 </tr>
@@ -66,6 +76,7 @@ else
 
     private List<Actividad> listaActividades = new();
     private double PorcentajeTotalAcumulado => listaActividades?.Sum(a => a.Porcentaje) ?? 0;
+    private bool CanManageActivities => UserCtrl.SessionUser?.Role == UserRole.Administrador || UserCtrl.SessionUser?.Role == UserRole.Docente;
 
     protected override async Task OnInitializedAsync()
     {
@@ -78,12 +89,17 @@ else
         listaActividades = actividades ?? new List<Actividad>();
     }
 
-    private async Task AbrirFormularioActividad()
+    private async Task AbrirFormularioActividad(Actividad? actividad = null)
     {
         var opciones = new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true };
         var parametros = new DialogParameters<FormularioActividad> { { x => x.MateriaId, MateriaId } };
         
-        var dialog = await DialogService.ShowAsync<FormularioActividad>("Crear Nueva Evaluación", parametros, opciones);
+        if (actividad != null)
+        {
+            parametros.Add(x => x.ActividadToEdit, actividad);
+        }
+        
+        var dialog = await DialogService.ShowAsync<FormularioActividad>(actividad == null ? "Crear Nueva Evaluación" : "Editar Evaluación", parametros, opciones);
         var result = await dialog.Result;
 
         if (result != null && !result.Canceled)
@@ -115,6 +131,12 @@ else
 
     private async Task EliminarActividad(int id)
     {
+        if (!CanManageActivities)
+        {
+            Snackbar.Add("Solo docentes y administradores pueden eliminar evaluaciones.", Severity.Warning);
+            return;
+        }
+
         try
         {
             await ActividadCtrl.DeleteActividadAsync(id);

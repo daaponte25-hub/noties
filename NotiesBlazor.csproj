@@ -27,4 +27,11 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="noties/**/*.cs" />
+    <RazorComponent Remove="noties/**/*.razor" />
+    <Content Remove="noties/**" />
+    <None Remove="noties/**" />
+  </ItemGroup>
+
 </Project>
